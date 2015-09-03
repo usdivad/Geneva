@@ -69,10 +69,10 @@ Geneva.Session = function(tunings) {
 Geneva.Session.prototype = {
     constructor: Geneva.Session,
 
-    populate: function(numChromosomes, numNotes, mode) {
+    populate: function(numChromosomes, numNotes, octaveRange, mode) {
         for (i=0; i<numChromosomes; i++) {
             var chromosome = new Geneva.Chromosome();
-            chromosome.generateNotes(numNotes, this.scale, mode);
+            chromosome.generateNotes(numNotes, this.scale, octaveRange, mode);
             this.chromosomes[i] = chromosome;
         }
     }
@@ -91,7 +91,7 @@ Geneva.Chromosome = function(notes) {
 Geneva.Chromosome.prototype = {
     constructor: Geneva.Chromosome,
 
-    generateNotes: function(n, scale, mode) {
+    generateNotes: function(n, scale, octaveRange, mode) {
         var notes = [];
 
         if (scale === undefined) {
@@ -100,8 +100,10 @@ Geneva.Chromosome.prototype = {
 
         if (mode == "random" || mode === undefined) {
             for (var i=0; i<n; i++) {
-                var note = scale[Math.floor(Math.random()*scale.length)];
-                notes.push(new Geneva.Note(note, 1));
+                var scaleDegree = Math.floor(Math.random()*scale.length);
+                var note = scale[scaleDegree];
+                var octave = Math.floor(Math.random()*octaveRange) + 1;
+                notes.push(new Geneva.Note(note, scaleDegree, octave, 1));
             }
         }
         else if (mode == "drunk") {
@@ -115,7 +117,8 @@ Geneva.Chromosome.prototype = {
                 }
                 noteIdx += step;
                 noteIdx = Math.abs(noteIdx % scale.length); // normalize
-                notes.push(new Geneva.Note(scale[noteIdx], 1));
+                var octave = Math.min(Math.abs(Math.ceil(noteIdx / scale.length)), octaveRange);
+                notes.push(new Geneva.Note(scale[noteIdx], noteIdx, octave, 1));
             }
 
         }
@@ -127,7 +130,7 @@ Geneva.Chromosome.prototype = {
     },
 
     mutate: function() {
-        // Phrase mutation
+        // Chromosome mutation
 
         // Note-by-note mutation
         for (var i=0; i<this.notes.length; i++) {
@@ -161,7 +164,10 @@ Geneva.Chromosome.prototype = {
         var str = "";
         for (var i=0; i<this.notes.length; i++) {
             var note = this.notes[i];
-            str += "(p:" + note.pitch + ", r:" + note.rhythm + ")\n";
+            str += "(p:" + note.pitch
+                +  ", s:" + note.scaleDegree
+                +  ", v:" + note.octave
+                +  ", r:" + note.rhythm + ")\n";
         }
         return str;
     }
@@ -173,8 +179,10 @@ Geneva.crossover = function(c1, c2) {
 
 // Note class
 // pitch represented as tuning ratio (during performance, multiplied by Geneva.root)
-Geneva.Note = function(p, r) {
+Geneva.Note = function(p, s, v, r) {
     this.pitch = p;
+    this.scaleDegree = s;
+    this.octave = v;
     this.rhythm = r;
 }
 
@@ -200,7 +208,7 @@ Geneva.Note.prototype = {
  * TESTING
  */
 var session = new Geneva.Session();
-session.populate(Geneva.DEFAULT_CHROMOSOMES, Geneva.DEFAULT_NOTES, "drunk");
+session.populate(Geneva.DEFAULT_CHROMOSOMES, Geneva.DEFAULT_NOTES, Geneva.DEFAULT_OCTAVES, "random");
 var c0 = session.chromosomes[0];
 console.log(c0);
 c0.mutate();
