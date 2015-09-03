@@ -98,14 +98,16 @@ Geneva.Chromosome.prototype = {
             scale = Geneva.DEFAULT_SCALE;
         }
 
+        // Choose random notes from scale
         if (mode == "random" || mode === undefined) {
             for (var i=0; i<n; i++) {
                 var scaleDegree = Math.floor(Math.random()*scale.length);
                 var note = scale[scaleDegree];
-                var octave = Math.floor(Math.random()*octaveRange) + 1;
+                var octave = Math.floor(Math.random()*octaveRange);
                 notes.push(new Geneva.Note(note, scaleDegree, octave, 1));
             }
         }
+        // Drunk walk along scale
         else if (mode == "drunk") {
             var noteIdx = Math.floor(Math.random()*scale.length);
             var maxStepSize = 3;
@@ -153,21 +155,44 @@ Geneva.Chromosome.prototype = {
         }
     },
 
-    invert: function(root) {
-        for (var i=0; i<this.notes.length; i++) {
-            var pitch = this.notes[i].pitch;
-            // invert around root
+    // Invert pitches, based on scale, around the first note in the sequence
+    // Assert that c.invert().invert() == c, EXCEPT for notes where the inversion's octave < 0
+    invert: function(scale) {
+        var center = this.notes[0];
+        var str = "";
+        for (var i=1; i<this.notes.length; i++) {
+            var note = this.notes[i];
+            str += "note before: " + note.toString() + "\n";
+            
+            var distance = (center.scaleDegree + (center.octave*scale.length)) - (note.scaleDegree + (note.octave*scale.length));
+            str += "center: " + center.toString() + "\n";
+            str += "distance: " + distance + "\n"
+
+            // Calculate scale degree and octave
+            note.scaleDegree = (center.scaleDegree + (distance % scale.length)) % scale.length;
+            note.octave = center.octave + Math.floor(distance / scale.length);
+
+            // Adjustments based on boundaries
+            if (note.scaleDegree < 0) {
+                note.scaleDegree = scale.length + note.scaleDegree;
+            }
+            if (note.octave < 0) {
+                note.octave = 0;
+            }
+
+            str += "note after: " + note.toString() + "\n\n";
+            
+            // Debug output
+            console.log(str);
+            
+            this.notes[i] = note;
         }
     },
 
     toString: function() {
         var str = "";
         for (var i=0; i<this.notes.length; i++) {
-            var note = this.notes[i];
-            str += "(p:" + note.pitch
-                +  ", s:" + note.scaleDegree
-                +  ", v:" + note.octave
-                +  ", r:" + note.rhythm + ")\n";
+            str += this.notes[i].toString() + "\n";
         }
         return str;
     }
@@ -199,6 +224,17 @@ Geneva.Note.prototype = {
         else {
             // modulo stuff and w scales
         }
+    },
+
+    toPitch: function(scale) {
+        return scale[this.scaleDegree] * this.octave;
+    },
+
+    toString: function() {
+        return "{scaleDegree: " + this.scaleDegree
+                + ", octave: " + this.octave
+                + ", rhythm: " + this.rhythm
+                + "}";
     }
 
 };
@@ -211,4 +247,4 @@ var session = new Geneva.Session();
 session.populate(Geneva.DEFAULT_CHROMOSOMES, Geneva.DEFAULT_NOTES, Geneva.DEFAULT_OCTAVES, "random");
 var c0 = session.chromosomes[0];
 console.log(c0);
-c0.mutate();
+c0.invert();
