@@ -1,9 +1,6 @@
 var Geneva = Geneva || {};
 
 // Namespace-wide variables
-Geneva.crossoverRate = 0.7;
-Geneva.mutationRate = 0.2;
-Geneva.root = 440;
 Geneva.scaleMatrices = {
     // MIDI absolute notes
     // pentatonic: [60, 63, 65, 67, 70],
@@ -13,7 +10,8 @@ Geneva.scaleMatrices = {
     // pentatonic: [0, 3, 5, 7, 10],
     // pentatonicDorian: [0, 3, 5, 7, 9, 10]
 
-    // Scale booleans based on shierlu tuning ratios    
+    // Scale booleans based on shierlu tuning ratios
+    ones:     [1,1,1,1,1,1,1,1,1,1,1,1],    
     yu:      [1,0,0,1,0,1,0,1,0,0,1,0],
     shang:   [1,0,1,0,0,1,0,1,0,0,1,0],
     gong:    [1,0,1,0,1,0,0,1,0,1,0,0],
@@ -23,53 +21,53 @@ Geneva.scaleMatrices = {
 
 Geneva.tunings = {
     shierlu: [1, 2187/2048, 9/8, 1968/1630, 81/64, 1771/1311, 729/512, 3/2, 6561/4096, 27/16, 5905/3277, 243/128],
+    // shierlu: [1, 1.06787109375, 1.125, 1.207361963190184, 1.265625, 1.3508771929824561, 1.423828125, 1.5, 1.601806640625, 1.6875, 1.801953005797986, 1.8984375],
     guqin: [1, 3/4, 2/3, 1/2, 1/3, 1/4],
     just: [1, 9/8, 5/4, 4/3, 3/2, 5/3, 15/8, 2/1]
 };
 
 // Defaults
-Geneva.DEFAULT_SCALE = Geneva.tunings.guqin;
-Geneva.DEFAULT_CHROMOSOMES = 10;
-Geneva.DEFAULT_NOTES = 10;
-Geneva.DEFAULT_OCTAVES = 3;
-Geneva.DEFAULT_MAX_STEP_SIZE = 3;
+Geneva.defaults = {
+    // Population settings
+    tuning: Geneva.tunings.shierlu,
+    root: 110,
+    numChromosomes: 1,
+    numNotes: 8,
+    octaveRange: 2,
+    maxStepSize: 2,
+
+    // Gen
+    crossoverRate: 0.7,
+    mutationRate: 0.2,
+
+    // Performance
+    interval: 500,
+    velocity: 64
+};
 
 Geneva.phraseMutationMethods = [Geneva.invert, Geneva.transpose, Geneva.retrograde];
 Geneva.noteMutationMethods = [Geneva.addNote, Geneva.removeNote, Geneva.scaleNoteRhythm];
 Geneva.pitchMutationMethods = [];
 Geneva.rhythmMutationMethods = [];
 
-// Geneva.setScale = function(tunings) {
-//     if (tunings === undefined) {
-//         tunings = Geneva.tunings.shierlu;
-//     }
-//     var scaleMatrix = Geneva.scaleMatrices[Object.keys(Geneva.scaleMatrices).choose()];
-//     var scale = [];
-//     for (var i=0; i<scaleMatrix.length; i++) {
-//         if (scaleMatrix[i] == 1) {
-//             scale.push(tunings[i]);
-//         }
-//     }
-//     this.scale = scale;
-// }
-
-
 // Session class
 Geneva.Session = function(tunings, root) {
     if (tunings === undefined) {
-        tunings = Geneva.tunings.shierlu;
+        tunings = Geneva.defaults.tuning;
     }
     if (root === undefined) {
-        root = Geneva.root;
+        root = Geneva.defaults.root;
     }
+
     var scaleMatrix = Geneva.scaleMatrices[Object.keys(Geneva.scaleMatrices).choose()];
     var scale = [];
-    for (var i=0; i<scaleMatrix.length; i++) {
+    for (var i=0; i<Math.min(scaleMatrix.length, tunings.length); i++) {
         if (scaleMatrix[i] == 1) {
             scale.push(tunings[i]);
         }
     }
     this.scale = scale;
+    console.log(this.scale);
     this.root = root;
     this.chromosomes = [];
     this.interval = T("interval");
@@ -78,31 +76,52 @@ Geneva.Session = function(tunings, root) {
 Geneva.Session.prototype = {
     constructor: Geneva.Session,
 
+    // Create scale from tuning based on scale matrix
+    setScale: function(tunings, matrix) {
+        var scale = [];
+        for (var i=0; i<Math.min(matrix.length, tunings.length); i++) {
+            if (matrix[i] == 1) {
+                scale.push(tunings[i]);
+            }
+        }
+        this.scale = scale;
+        console.log(this.scale);
+    },
+
     populate: function(numChromosomes, numNotes, octaveRange, mode) {
         for (var i=0; i<numChromosomes; i++) {
             var chromosome = new Geneva.Chromosome();
             chromosome.generateNotes(numNotes, this.scale, octaveRange, mode);
             this.chromosomes[i] = chromosome;
         }
-    }, 
+    },
+
+    invertAll: function() {
+        for (var i=0; i<this.chromosomes.length; i++) {
+            this.chromosomes[i].invert(this.scale);
+        }
+    },
 
     play: function() {
         var chromosomes = this.chromosomes;
         var scale = this.scale;
         var root = this.root;
+        var interval = Geneva.defaults.interval;
+        var vel = Geneva.defaults.velocity;
 
         for (var i=0; i<chromosomes.length; i++) {
             chromosomes[i].synth.play();
         }
 
         // for initial testing; to implement rhythm move the actual T("interval") to Chromosome class
-        this.interval = T("interval", {interval: 500}, function(count) {
+        this.interval = T("interval", {interval: interval}, function(count) {
             console.log("<!--count " + count + "-->");
             for (var i=0; i<chromosomes.length; i++) {
                 var chromosome = chromosomes[i];
                 var note = chromosome.notes[count % chromosome.notes.length];
-                var freq = scale[note.scaleDegree] * note.octave * root;
-                chromosome.synth.noteOnWithFreq(freq, 64);
+                var freq = scale[note.scaleDegree] * (note.octave + 1) * root;
+                console.log("ratio:" + scale[note.scaleDegree] + ", sd:" + note.scaleDegree + ", oct:" + note.octave + ", root:" + root);
+                chromosome.synth.noteOnWithFreq(freq, vel);
                 console.log("chromosome " + i + " playing " + freq);
             }
         }).start();
@@ -116,7 +135,8 @@ Geneva.Session.prototype = {
 // Chromosome class
 Geneva.Chromosome = function(notes) {
     this.notes = [];
-    this.synth = T("PluckGen", {env: T("perc", {a:50, r: 1000}), mul: 0.5});
+    this.synth = T("PluckGen", {env: T("perc", {a:50, r: 1000}), mul: 0.5}).play();
+    // this.interval = T("interval", {interval: 500});
 
     if (notes !== undefined) {
         this.notes = notes;
@@ -130,7 +150,8 @@ Geneva.Chromosome.prototype = {
         var notes = [];
 
         if (scale === undefined) {
-            scale = Geneva.DEFAULT_SCALE;
+            console.log("No scale selected!");
+            return;
         }
 
         // Choose random notes from scale
@@ -145,7 +166,7 @@ Geneva.Chromosome.prototype = {
         // Drunk walk along scale
         else if (mode == "drunk") {
             var noteIdx = Math.floor(Math.random()*scale.length);
-            var maxStepSize = Geneva.DEFAULT_MAX_STEP_SIZE;
+            var maxStepSize = Geneva.defaults.maxStepSize;
             for (var i=0; i<n; i++) {
                 var reverseDirection = Math.random();
                 var step = Math.floor(Math.random()*maxStepSize) + 1; // up
@@ -155,7 +176,7 @@ Geneva.Chromosome.prototype = {
                 noteIdx += step;
                 noteIdx = Math.abs(noteIdx % scale.length); // normalize
                 var octave = Math.min(Math.abs(Math.ceil(noteIdx / scale.length)), octaveRange);
-                notes.push(new Geneva.Note(scale[noteIdx], noteIdx, octave, 1));
+                notes.push(new Geneva.Note(noteIdx, octave, 1));
             }
 
         }
@@ -218,7 +239,7 @@ Geneva.Chromosome.prototype = {
             str += "note after: " + note.toString() + "\n\n";
             
             // Debug output
-            console.log(str);
+            // console.log(str);
             
             this.notes[i] = note;
         }
@@ -283,7 +304,8 @@ Geneva.Note.prototype = {
  * TESTING
  */
 var session = new Geneva.Session();
-session.populate(Geneva.DEFAULT_CHROMOSOMES, Geneva.DEFAULT_NOTES, Geneva.DEFAULT_OCTAVES, "random");
+session.setScale(Geneva.tunings.just, Geneva.scaleMatrices.ones);
+session.populate(Geneva.defaults.numChromosomes, Geneva.defaults.numNotes, Geneva.defaults.octaveRange, "drunk");
 var c0 = session.chromosomes[0];
 console.log(c0);
-c0.invert(session.scale);
+// c0.invert(session.scale);
