@@ -1,13 +1,31 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" href="css/style.css"/>
+        <!-- Prod -->
+        <!--
         <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-        <script src="//mohayonao.github.io/subcollider/builds/subcollider-min.js"></script>
+        <script src="//mohayonao.github.io/subcollider/builds/subcollider.js"></script>
         <script src="//mohayonao.github.io/timbre.js/timbre.js"></script>
+        -->
+
+        <!-- Local testing -->
+        <script src="js/lib/jquery-1.11.3.min.js"></script>
+        <script src="js/lib/subcollider.js"></script>
+        <script src="js/lib/timbre.js"></script>
         <script src="js/geneva.js"></script>
     </head>
     <body>
         <div id="content">
+            <div id="playback">
+                <h2>Playback</h2>
+                <div class="ctrlBtn" id="playBtn">Play</div>
+                <div class="ctrlBtn" id="stopBtn">Stop</div>
+            </div>
+            <div id="mutate">
+                <h2>Mutate</h2>
+                <div class="ctrlBtn" id="invertBtn">Invert</div>
+            </div>
         </div>
     </body>
 </html>

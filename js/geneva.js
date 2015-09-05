@@ -303,9 +303,24 @@ Geneva.Note.prototype = {
 /*
  * TESTING
  */
-var session = new Geneva.Session();
-session.setScale(Geneva.tunings.just, Geneva.scaleMatrices.ones);
-session.populate(Geneva.defaults.numChromosomes, Geneva.defaults.numNotes, Geneva.defaults.octaveRange, "drunk");
-var c0 = session.chromosomes[0];
-console.log(c0);
-// c0.invert(session.scale);
+window.onload = function() {
+    var session = new Geneva.Session();
+    session.setScale(Geneva.tunings.just, Geneva.scaleMatrices.ones);
+    session.populate(Geneva.defaults.numChromosomes, Geneva.defaults.numNotes, Geneva.defaults.octaveRange, "drunk");
+    var c0 = session.chromosomes[0];
+    console.log(c0);
+    // c0.invert(session.scale);
+
+
+    document.getElementById("playBtn").addEventListener("click", function() {
+        session.play();
+    });
+
+    document.getElementById("stopBtn").addEventListener("click", function() {
+        session.stop();
+    });
+
+    document.getElementById("invertBtn").addEventListener("click", function() {
+        session.invertAll();
+    });
+};
