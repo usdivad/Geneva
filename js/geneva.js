@@ -30,7 +30,7 @@ Geneva.tunings = {
 Geneva.defaults = {
     // Population settings
     tuning: Geneva.tunings.shierlu,
-    root: 110,
+    root: 220,
     numChromosomes: 1,
     numNotes: 8,
     octaveRange: 2,
@@ -175,7 +175,8 @@ Geneva.Chromosome.prototype = {
                 }
                 noteIdx += step;
                 noteIdx = Math.abs(noteIdx % scale.length); // normalize
-                var octave = Math.min(Math.abs(Math.ceil(noteIdx / scale.length)), octaveRange);
+                var octave = Math.min(Math.abs(Math.floor(noteIdx / scale.length)), octaveRange);
+                console.log(octave);
                 notes.push(new Geneva.Note(noteIdx, octave, 1));
             }
 
@@ -239,7 +240,7 @@ Geneva.Chromosome.prototype = {
             str += "note after: " + note.toString() + "\n\n";
             
             // Debug output
-            // console.log(str);
+            console.log(str);
             
             this.notes[i] = note;
         }
