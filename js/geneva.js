@@ -35,6 +35,7 @@ Geneva.defaults = {
     numNotes: 8,
     octaveRange: 2,
     maxStepSize: 2,
+    restPrb: 5/24,
 
     // Gen
     crossoverRate: 0.7,
@@ -44,6 +45,8 @@ Geneva.defaults = {
     interval: 500,
     velocity: 64
 };
+Geneva.REST = -1;
+// Geneva.HOLD = -2;
 
 Geneva.phraseMutationMethods = [Geneva.invert, Geneva.transpose, Geneva.retrograde];
 Geneva.noteMutationMethods = [Geneva.addNote, Geneva.removeNote, Geneva.scaleNoteRhythm];
@@ -66,6 +69,9 @@ Geneva.Session = function(tunings, root) {
             scale.push(tunings[i]);
         }
     }
+
+    // Add rests and holds
+    // scale = Geneva.addRestsAndHolds(scale);
     this.scale = scale;
     console.log(this.scale);
     this.root = root;
@@ -129,10 +135,15 @@ Geneva.Session.prototype = {
             for (var i=0; i<chromosomes.length; i++) {
                 var chromosome = chromosomes[i];
                 var note = chromosome.notes[count % chromosome.notes.length];
-                var freq = scale[note.scaleDegree] * (note.octave + 1) * root;
-                console.log("ratio:" + scale[note.scaleDegree] + ", sd:" + note.scaleDegree + ", oct:" + note.octave + ", root:" + root);
-                chromosome.synth.noteOnWithFreq(freq, vel);
-                console.log("chromosome " + i + " playing scale degree " + note.scaleDegree + " (" + freq + "Hz)");
+                if (note.scaleDegree < 0) {
+                    console.log("chromosome " + i + " is resting");
+                }
+                else {
+                    var freq = scale[note.scaleDegree] * (note.octave + 1) * root;
+                    console.log("ratio:" + scale[note.scaleDegree] + ", sd:" + note.scaleDegree + ", oct:" + note.octave + ", root:" + root);
+                    chromosome.synth.noteOnWithFreq(freq, vel);
+                    console.log("chromosome " + i + " playing scale degree " + note.scaleDegree + " (" + freq + "Hz)");
+                }
             }
         }).start();
     },
@@ -170,6 +181,12 @@ Geneva.Chromosome.prototype = {
                 var scaleDegree = Math.floor(Math.random()*scale.length);
                 var note = scale[scaleDegree];
                 var octave = Math.floor(Math.random()*octaveRange);
+
+                var restPrb = Math.random() < Geneva.defaults.restPrb;
+                if (restPrb) {
+                    scaleDegree = Geneva.REST;
+                }
+
                 notes.push(new Geneva.Note(scaleDegree, octave, 1));
             }
         }
@@ -178,7 +195,7 @@ Geneva.Chromosome.prototype = {
             var noteIdx = Math.floor(Math.random()*scale.length);
             var octave = Math.floor(Math.random()*octaveRange);
             var maxStepSize = Geneva.defaults.maxStepSize;
-            console.log(noteIdx + ", " + octave);
+            // console.log(noteIdx + ", " + octave);
             notes.push(new Geneva.Note(noteIdx, octave, 1));
 
             for (var i=1; i<n; i++) {
@@ -188,7 +205,7 @@ Geneva.Chromosome.prototype = {
                     step *= -1;
                 }
                 noteIdx += step;
-                console.log(noteIdx);
+                // console.log(noteIdx);
                 if (Math.abs(noteIdx) > scale.length) {
                     octave += Math.floor(noteIdx/scale.length);
                     if (octave > octaveRange) {
@@ -197,12 +214,20 @@ Geneva.Chromosome.prototype = {
                     else if (octave < 0) {
                         octave = 0;
                     }
-                    console.log("oc");
+                    // console.log("oc");
                 }
                 noteIdx = Math.abs(noteIdx % scale.length); // normalize
+                
                 // var octave = Math.min(Math.abs(Math.floor(noteIdx / scale.length)), octaveRange);
-                console.log(noteIdx + ", " + octave);
-                notes.push(new Geneva.Note(noteIdx, octave, 1));
+                // console.log(noteIdx + ", " + octave);
+
+                var restPrb = Math.random() < Geneva.defaults.restPrb;
+                if (restPrb) {
+                    notes.push(new Geneva.Note(Geneva.REST, octave, 1));
+                }
+                else {
+                    notes.push(new Geneva.Note(noteIdx, octave, 1));
+                }
             }
 
         }
@@ -331,6 +356,12 @@ Geneva.Note.prototype = {
     }
 
 };
+
+Geneva.addRestsAndHolds = function(scale) {
+    scale.push(Geneva.REST);
+    scale.push(Geneva.HOLD);
+    return scale;
+}
 
 
 /*
