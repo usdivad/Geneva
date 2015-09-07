@@ -23,7 +23,7 @@ Geneva.tunings = {
     shierlu: [1, 2187/2048, 9/8, 1968/1630, 81/64, 1771/1311, 729/512, 3/2, 6561/4096, 27/16, 5905/3277, 243/128],
     // shierlu: [1, 1.06787109375, 1.125, 1.207361963190184, 1.265625, 1.3508771929824561, 1.423828125, 1.5, 1.601806640625, 1.6875, 1.801953005797986, 1.8984375],
     guqin: [1, 3/4, 2/3, 1/2, 1/3, 1/4],
-    just: [1, 9/8, 5/4, 4/3, 3/2, 5/3, 15/8, 2/1]
+    just: [1, 9/8, 5/4, 4/3, 3/2, 5/3, 15/8]
 };
 
 // Defaults
@@ -31,7 +31,7 @@ Geneva.defaults = {
     // Population settings
     tuning: Geneva.tunings.shierlu,
     root: 220,
-    numChromosomes: 1,
+    numChromosomes: 3,
     numNotes: 8,
     octaveRange: 2,
     maxStepSize: 2,
@@ -89,16 +89,26 @@ Geneva.Session.prototype = {
     },
 
     populate: function(numChromosomes, numNotes, octaveRange, mode) {
+        var cd = document.getElementById("chromosomes");
+        var cdHtml = "<h2>Chromosomes</h2>\n";
+
         for (var i=0; i<numChromosomes; i++) {
             var chromosome = new Geneva.Chromosome();
             chromosome.generateNotes(numNotes, this.scale, octaveRange, mode);
             this.chromosomes[i] = chromosome;
+
+            cdHtml += "<div class=\"chromosomeDisplay\" id=\"chromosome" + i + "\">"
+                    + chromosome.toHTML()
+                    + "</div>\n";
         }
+
+        cd.innerHTML = cdHtml;
     },
 
     invertAll: function() {
         for (var i=0; i<this.chromosomes.length; i++) {
             this.chromosomes[i].invert(this.scale);
+            document.getElementById("chromosome" + i).innerHTML = this.chromosomes[i].toHTML();
         }
     },
 
@@ -122,7 +132,7 @@ Geneva.Session.prototype = {
                 var freq = scale[note.scaleDegree] * (note.octave + 1) * root;
                 console.log("ratio:" + scale[note.scaleDegree] + ", sd:" + note.scaleDegree + ", oct:" + note.octave + ", root:" + root);
                 chromosome.synth.noteOnWithFreq(freq, vel);
-                console.log("chromosome " + i + " playing " + freq);
+                console.log("chromosome " + i + " playing scale degree " + note.scaleDegree + " (" + freq + "Hz)");
             }
         }).start();
     },
@@ -135,7 +145,7 @@ Geneva.Session.prototype = {
 // Chromosome class
 Geneva.Chromosome = function(notes) {
     this.notes = [];
-    this.synth = T("PluckGen", {env: T("perc", {a:50, r: 1000}), mul: 0.5}).play();
+    this.synth = T("OscGen", {env: T("perc", {a:50, r: 1000}), mul: 0.1}).play();
     // this.interval = T("interval", {interval: 500});
 
     if (notes !== undefined) {
@@ -166,17 +176,32 @@ Geneva.Chromosome.prototype = {
         // Drunk walk along scale
         else if (mode == "drunk") {
             var noteIdx = Math.floor(Math.random()*scale.length);
+            var octave = Math.floor(Math.random()*octaveRange);
             var maxStepSize = Geneva.defaults.maxStepSize;
-            for (var i=0; i<n; i++) {
+            console.log(noteIdx + ", " + octave);
+            notes.push(new Geneva.Note(noteIdx, octave, 1));
+
+            for (var i=1; i<n; i++) {
                 var reverseDirection = Math.random();
                 var step = Math.floor(Math.random()*maxStepSize) + 1; // up
                 if (reverseDirection > 0.5) { // down
                     step *= -1;
                 }
                 noteIdx += step;
+                console.log(noteIdx);
+                if (Math.abs(noteIdx) > scale.length) {
+                    octave += Math.floor(noteIdx/scale.length);
+                    if (octave > octaveRange) {
+                        octave = octaveRange;
+                    }
+                    else if (octave < 0) {
+                        octave = 0;
+                    }
+                    console.log("oc");
+                }
                 noteIdx = Math.abs(noteIdx % scale.length); // normalize
-                var octave = Math.min(Math.abs(Math.floor(noteIdx / scale.length)), octaveRange);
-                console.log(octave);
+                // var octave = Math.min(Math.abs(Math.floor(noteIdx / scale.length)), octaveRange);
+                console.log(noteIdx + ", " + octave);
                 notes.push(new Geneva.Note(noteIdx, octave, 1));
             }
 
@@ -256,6 +281,14 @@ Geneva.Chromosome.prototype = {
             str += this.notes[i].toString() + "\n";
         }
         return str;
+    },
+
+    toHTML: function() {
+        var htmlArr = [];
+        for (var i=0; i<this.notes.length; i++) {
+            htmlArr.push(this.notes[i].scaleDegree * (this.notes[i].octave + 1));
+        }
+        return htmlArr.join(" ");
     }
 };
 
@@ -264,7 +297,6 @@ Geneva.crossover = function(c1, c2) {
 };
 
 // Note class
-// pitch represented as tuning ratio (during performance, multiplied by Geneva.root)
 Geneva.Note = function(s, v, r) {
     // this.pitch = p;
     this.scaleDegree = s;
@@ -306,7 +338,9 @@ Geneva.Note.prototype = {
  */
 window.onload = function() {
     var session = new Geneva.Session();
+    console.log(session);
     session.setScale(Geneva.tunings.just, Geneva.scaleMatrices.ones);
+    session.setScale(Geneva.tunings.shierlu, Geneva.scaleMatrices.yu);
     session.populate(Geneva.defaults.numChromosomes, Geneva.defaults.numNotes, Geneva.defaults.octaveRange, "drunk");
     var c0 = session.chromosomes[0];
     console.log(c0);
