@@ -31,18 +31,19 @@ Geneva.defaults = {
     // Population settings
     tuning: Geneva.tunings.shierlu,
     root: 220,
-    numChromosomes: 3,
-    numNotes: 8,
-    octaveRange: 2,
+    numChromosomes: 1,
+    numNotes: 4,
+    octaveRange: 3,
     maxStepSize: 2,
     restPrb: 5/24,
 
     // Gen
     crossoverRate: 0.7,
     mutationRate: 0.2,
+    maxRotations: 5,
 
     // Performance
-    interval: 500,
+    interval: 200,
     velocity: 64
 };
 Geneva.REST = -1;
@@ -118,6 +119,14 @@ Geneva.Session.prototype = {
         }
     },
 
+    transposeAll: function() {
+        console.log("asdf");
+        for (var i=0; i<this.chromosomes.length; i++) {
+            this.chromosomes[i].transpose(this.scale);
+            document.getElementById("chromosome" + i).innerHTML = this.chromosomes[i].toHTML();
+        }
+    },
+
     play: function() {
         var chromosomes = this.chromosomes;
         var scale = this.scale;
@@ -135,15 +144,16 @@ Geneva.Session.prototype = {
             for (var i=0; i<chromosomes.length; i++) {
                 var chromosome = chromosomes[i];
                 var note = chromosome.notes[count % chromosome.notes.length];
+
                 if (note.scaleDegree < 0) {
                     console.log("chromosome " + i + " is resting");
+                    continue;
                 }
-                else {
-                    var freq = scale[note.scaleDegree] * (note.octave + 1) * root;
-                    console.log("ratio:" + scale[note.scaleDegree] + ", sd:" + note.scaleDegree + ", oct:" + note.octave + ", root:" + root);
-                    chromosome.synth.noteOnWithFreq(freq, vel);
-                    console.log("chromosome " + i + " playing scale degree " + note.scaleDegree + " (" + freq + "Hz)");
-                }
+
+                var freq = scale[note.scaleDegree] * (note.octave + 1) * root;
+                console.log("ratio:" + scale[note.scaleDegree] + ", sd:" + note.scaleDegree + ", oct:" + note.octave + ", root:" + root);
+                chromosome.synth.noteOnWithFreq(freq, vel);
+                console.log("chromosome " + i + " playing scale degree " + note.scaleDegree + " (" + freq + "Hz)");
             }
         }).start();
     },
@@ -156,7 +166,10 @@ Geneva.Session.prototype = {
 // Chromosome class
 Geneva.Chromosome = function(notes) {
     this.notes = [];
-    this.synth = T("OscGen", {env: T("perc", {a:50, r: 1000}), mul: 0.1}).play();
+    // this.synth = T("PluckGen", {env: T("perc", {a:50, r: 1000}), mul: 0.1}).play();
+    this.synth = T("OscGen", {env: T("perc", {a: 10, r: 50}), mul: 0.1}).play();
+    // this.synth = T("OscGen", {env: T("perc", {a: (Math.random()*50) + 25, r: Math.random() * Geneva.defaults.interval}), mul:0.1}).play();
+
     // this.interval = T("interval", {interval: 500});
 
     if (notes !== undefined) {
@@ -238,28 +251,44 @@ Geneva.Chromosome.prototype = {
         this.notes = notes;
     },
 
-    mutate: function() {
-        // Chromosome mutation
-
-        // Note-by-note mutation
-        for (var i=0; i<this.notes.length; i++) {
-            var dice = Math.random();
-            if (dice > Geneva.crossoverRate) {
-                var note = this.notes[i].mutate();
-                var p = note.pitch;
-                var r = note.rhythm;
-                if (r == 0) { // removeNote
-                    this.notes = this.notes.splice(i, 1);
-                }
-                else if (r < 0) { // addNote; use absolute value of r
-                    this.notes = this.notes.splice(i+1, 0, new Geneva.Note(p, Math.abs(r)));
-                    
-                }
-                else {
-                    this.notes[i] = new Geneva.Note(p, r);
-                }
-            }
+    mutate: function(scale) {
+        var mutationMethod = Geneva.noteMutationMethods.choose();
+        switch(mutationMethod) {
+            case "reverse":
+                this.reverse();
+                break;
+            case "rotate":
+                this.rotate();
+                break;
+            case "invert":
+                this.invert(scale);
+                break;
+            case "sortAsc":
+                this.sortAsc();
+                break;
+            case "sortDesc":
+                this.sortDesc();
+                break;
+            case "transpose":
+                this.transpose(scale);
+                break;
+            default:
+                console.log("invalid mutation method " + mutationMethod);
         }
+    },
+
+    // Reverse the order of notes
+    reverse: function() {
+        this.notes.reverse();
+    },
+
+    // Rotate by up to max steps
+    rotate: function(max) {
+        if (max === undefined) {
+            max = Geneva.defaults.maxRotations;
+        }
+        var r = Math.floor(max.rand2()); // from -max to max
+        this.notes = this.notes.rotate(r);
     },
 
     // Invert pitches, based on scale, around the first note in the sequence
@@ -269,6 +298,10 @@ Geneva.Chromosome.prototype = {
         var str = "";
         for (var i=1; i<this.notes.length; i++) {
             var note = this.notes[i];
+            if (note.scaleDegree == Geneva.REST) {
+                str += "skipping rest";
+                continue;
+            }
             str += "note before: " + note.toString() + "\n";
             
             var distance = (center.scaleDegree + (center.octave*scale.length)) - (note.scaleDegree + (note.octave*scale.length));
@@ -296,8 +329,64 @@ Geneva.Chromosome.prototype = {
         }
     },
 
-    transpose: function(maxStepSize) {
+    // TODO: account for rests in sorting
+    sortAsc: function() {
+        this.notes.sort();
+    },
 
+    sortDesc: function() {
+        this.notes.sort.reverse();
+    },
+
+    transpose: function(scale, max, octaveRange) {
+        if (max === undefined) {
+            max = Geneva.defaults.maxStepSize;
+        }
+        if (octaveRange === undefined) {
+            octaveRange = Geneva.defaults.octaveRange;
+        }
+
+        var distance = Math.floor(max.rand2());
+        console.log("distance: " + distance);
+
+        for (var i=0; i<this.notes.length; i++) {
+            var note = this.notes[i];
+            if (note.scaleDegree == Geneva.REST) {
+                // str += "skipping rest";
+                continue;
+            }
+
+
+            // Calculate scale degree and octave
+            note.scaleDegree = (note.scaleDegree + (distance % scale.length)) % scale.length;
+            note.octave = note.octave + Math.floor(distance / scale.length);
+
+            // Adjustments based on boundaries
+            if (note.scaleDegree < 0) {
+                note.scaleDegree = scale.length + note.scaleDegree;
+            }
+            if (note.octave < 0) {
+                note.octave = 0;
+            }
+
+            // note.scaleDegree += step;
+            // if (Math.abs(note.scaleDegree) > scale.length) {
+            //     var sd = note.scaleDegree;
+            //     note.scaleDegree = sd % scale.length;
+            //     if (note.scaleDegree < 0) {
+            //         note.scaleDegree += scale.length;
+            //     }
+            //     note.octave += Math.floor(sd / scale.length);
+            //     if (note.octave > octaveRange) {
+            //         note.octave = octaveRange;
+            //     }
+            //     if (note.octave < 0) {
+            //         note.octave = 0;
+            //     }
+            // }
+
+            this.notes[i] = note;
+        }
     },
 
     toString: function() {
@@ -389,4 +478,9 @@ window.onload = function() {
     document.getElementById("invertBtn").addEventListener("click", function() {
         session.invertAll();
     });
+
+    document.getElementById("transposeBtn").addEventListener("click", function() {
+        session.transposeAll();
+    });
+
 };
