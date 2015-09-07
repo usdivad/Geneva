@@ -31,8 +31,8 @@ Geneva.defaults = {
     // Population settings
     tuning: Geneva.tunings.shierlu,
     root: 220,
-    numChromosomes: 1,
-    numNotes: 4,
+    numChromosomes: 2,
+    numNotes: 16,
     octaveRange: 3,
     maxStepSize: 2,
     restPrb: 5/24,
@@ -123,6 +123,34 @@ Geneva.Session.prototype = {
         console.log("asdf");
         for (var i=0; i<this.chromosomes.length; i++) {
             this.chromosomes[i].transpose(this.scale);
+            document.getElementById("chromosome" + i).innerHTML = this.chromosomes[i].toHTML();
+        }
+    },
+
+    mutateAll: function(method) {
+        for (var i=0; i<this.chromosomes.length; i++) {
+            switch(method) {
+                case "reverse":
+                    this.chromosomes[i].reverse();
+                    break;
+                case "rotate":
+                    this.chromosomes[i].rotate();
+                    break;
+                case "invert":
+                    this.chromosomes[i].invert(this.scale);
+                    break;
+                case "sortAsc":
+                    this.chromosomes[i].sortAsc();
+                    break;
+                case "sortDesc":
+                    this.chromosomes[i].sortDesc();
+                    break;
+                case "transpose":
+                    this.chromosomes[i].transpose(this.scale);
+                    break;
+                default:
+                    console.log("invalid mutation method " + method);
+            }
             document.getElementById("chromosome" + i).innerHTML = this.chromosomes[i].toHTML();
         }
     },
@@ -335,9 +363,10 @@ Geneva.Chromosome.prototype = {
     },
 
     sortDesc: function() {
-        this.notes.sort.reverse();
+        this.notes.sort().reverse();
     },
 
+    // Transpose along scale (num steps determined by max)
     transpose: function(scale, max, octaveRange) {
         if (max === undefined) {
             max = Geneva.defaults.maxStepSize;
@@ -475,12 +504,28 @@ window.onload = function() {
         session.stop();
     });
 
+    document.getElementById("reverseBtn").addEventListener("click", function() {
+        session.mutateAll("reverse");
+    });
+
+    document.getElementById("rotateBtn").addEventListener("click", function() {
+        session.mutateAll("rotate");
+    });
+
     document.getElementById("invertBtn").addEventListener("click", function() {
-        session.invertAll();
+        session.mutateAll("invert");
+    });
+
+    document.getElementById("sortAscBtn").addEventListener("click", function() {
+        session.mutateAll("sortAsc");
+    });
+
+    document.getElementById("sortDescBtn").addEventListener("click", function() {
+        session.mutateAll("sortDesc");
     });
 
     document.getElementById("transposeBtn").addEventListener("click", function() {
-        session.transposeAll();
+        session.mutateAll("transpose");
     });
 
 };
