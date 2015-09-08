@@ -1,14 +1,24 @@
 // Chromosome class
-Geneva.Chromosome = function(notes) {
+Geneva.Chromosome = function(notes, scale) {
     this.notes = [];
     // this.synth = T("PluckGen", {env: T("perc", {a:50, r: 1000}), mul: 0.1}).play();
-    this.synth = T("OscGen", {env: T("perc", {a: 10, r: 50}), mul: 0.1}).play();
+    this.synth = T("OscGen", {env: T("perc", {a: 10, r: 50}), mul: 1/Geneva.defaults.numChromosomes}).play();
     // this.synth = T("OscGen", {env: T("perc", {a: (Math.random()*50) + 25, r: Math.random() * Geneva.defaults.interval}), mul:0.1}).play();
 
     // this.interval = T("interval", {interval: 500});
 
     if (notes !== undefined) {
-        this.notes = notes;
+        if (typeof(notes[0]) === "number") {
+            if (scale === undefined) {
+                scale = Geneva.createScale(Geneva.defaults.tuning, geneva.defaults.matrix);
+            }
+            for (i=0; i<notes.length; i++) {
+                this.notes.push(new Geneva.Note(notes[i], scale));
+            }
+        }
+        else {
+            this.notes = notes;
+        }
     }
 };
 
@@ -35,7 +45,7 @@ Geneva.Chromosome.prototype = {
                     scaleDegree = Geneva.REST;
                 }
 
-                notes.push(new Geneva.Note(scaleDegree, octave, 1));
+                notes.push(new Geneva.Note(scaleDegree, octave));
             }
         }
         // Drunk walk along scale
@@ -44,7 +54,7 @@ Geneva.Chromosome.prototype = {
             var octave = Math.floor(Math.random()*octaveRange);
             var maxStepSize = Geneva.defaults.maxStepSize;
             // console.log(noteIdx + ", " + octave);
-            notes.push(new Geneva.Note(noteIdx, octave, 1));
+            notes.push(new Geneva.Note(noteIdx, octave));
 
             for (var i=1; i<n; i++) {
                 var reverseDirection = Math.random();
@@ -71,10 +81,10 @@ Geneva.Chromosome.prototype = {
 
                 var restPrb = Math.random() < Geneva.defaults.restPrb;
                 if (restPrb) {
-                    notes.push(new Geneva.Note(Geneva.REST, octave, 1));
+                    notes.push(new Geneva.Note(Geneva.REST, octave));
                 }
                 else {
-                    notes.push(new Geneva.Note(noteIdx, octave, 1));
+                    notes.push(new Geneva.Note(noteIdx, octave));
                 }
             }
 

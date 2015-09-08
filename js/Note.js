@@ -1,9 +1,14 @@
 // Note class
-Geneva.Note = function(s, v, r) {
-    // this.pitch = p;
+// Can be constructed with scaleDegree, octave
+// OR absoluteDegree, scale
+Geneva.Note = function(s, v) {
     this.scaleDegree = s;
     this.octave = v;
-    this.rhythm = r;
+
+    if (typeof(v) == "object") {
+        this.scaleDegree = s % v.length;
+        this.octave = Math.floor(s / v.length);
+    }
 }
 
 Geneva.Note.prototype = {

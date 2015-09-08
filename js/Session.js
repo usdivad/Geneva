@@ -29,12 +29,7 @@ Geneva.Session.prototype = {
 
     // Create scale from tuning based on scale matrix
     setScale: function(tunings, matrix) {
-        var scale = [];
-        for (var i=0; i<Math.min(matrix.length, tunings.length); i++) {
-            if (matrix[i] == 1) {
-                scale.push(tunings[i]);
-            }
-        }
+        var scale = Geneva.createScale(tunings, matrix);
         this.scale = scale;
         console.log(this.scale);
     },
@@ -45,15 +40,25 @@ Geneva.Session.prototype = {
 
         for (var i=0; i<numChromosomes; i++) {
             var chromosome = new Geneva.Chromosome();
+            var id = "chromosome" + i;
             chromosome.generateNotes(numNotes, this.scale, octaveRange, mode);
             this.chromosomes[i] = chromosome;
 
-            cdHtml += "<div class=\"chromosomeDisplay\" id=\"chromosome" + i + "\">"
+            cdHtml += "<div class=\"chromosomeDisplay\" id=\"" + id + "\">"
                     + chromosome.toHTML()
                     + "</div>\n";
         }
 
         cd.innerHTML = cdHtml;
+
+        // Add click functionality after display elms are created
+        for (var i=0; i<numChromosomes; i++) {
+            var id = "chromosome" + i;
+            document.getElementById(id).addEventListener("click", function(e) {
+                console.log(this);
+            });
+        }
+
     },
 
     invertAll: function() {
@@ -99,7 +104,9 @@ Geneva.Session.prototype = {
         }
     },
 
-    crossover: function(c0, c1) {
+    crossover: function(ci, cj) {
+        var c0 = this.chromosomes[ci];
+        var c1 = this.chromosomes[cj];
 
     },
 
@@ -136,5 +143,11 @@ Geneva.Session.prototype = {
 
     stop: function() {
         this.interval.stop();
+    },
+
+    updateDisplays: function() {
+        for (var i=0; i<this.chromosomes.length; i++) {
+            document.getElementById("chromosome" + i).innerHTML = this.chromosomes[i].toHTML();
+        }
     }
 };

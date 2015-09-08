@@ -30,8 +30,9 @@ Geneva.tunings = {
 Geneva.defaults = {
     // Population settings
     tuning: Geneva.tunings.shierlu,
+    matrix: Geneva.scaleMatrices.yu,
     root: 220,
-    numChromosomes: 4,
+    numChromosomes: 1,
     numNotes: 16,
     octaveRange: 3,
     maxStepSize: 2,
@@ -49,7 +50,20 @@ Geneva.defaults = {
 Geneva.REST = -1;
 // Geneva.HOLD = -2;
 
+
 Geneva.phraseMutationMethods = [Geneva.invert, Geneva.transpose, Geneva.retrograde];
 Geneva.noteMutationMethods = [Geneva.addNote, Geneva.removeNote, Geneva.scaleNoteRhythm];
 Geneva.pitchMutationMethods = [];
 Geneva.rhythmMutationMethods = [];
+
+
+//  Functions
+Geneva.createScale = function(tunings, matrix) {
+    var scale = [];
+    for (var i=0; i<Math.min(matrix.length, tunings.length); i++) {
+        if (matrix[i] == 1) {
+            scale.push(tunings[i]);
+        }
+    }
+    return scale;
+}
