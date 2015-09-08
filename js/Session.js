@@ -53,12 +53,30 @@ Geneva.Session.prototype = {
 
         // Add click functionality after display elms are created
         for (var i=0; i<numChromosomes; i++) {
-            var id = "chromosome" + i;
-            document.getElementById(id).addEventListener("click", function(e) {
-                console.log(this);
-            });
+            (function(i, session) {
+                var id = "chromosome" + i;
+                document.getElementById(id).addEventListener("click", function(e) {
+                    // console.log(this);
+                    this.style.color = "#FF6200";
+                    console.log(i);
+                    session.chromosomes[i].selected = true;
+                });
+            })(i, this);
         }
 
+    },
+
+    getSelected: function() {
+        var selected = [];
+        console.log(this.chromosomes[0]);
+        for (var i=0; i<this.chromosomes.length; i++) {
+            if (this.chromosomes[i].selected) {
+                selected.push(this.chromosomes[i]);
+                console.log("chromosome " + i + " was selected");
+            }
+        }
+        console.log(selected.length + " selected chromosomes");
+        return selected;
     },
 
     invertAll: function() {

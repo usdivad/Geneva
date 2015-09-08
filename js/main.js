@@ -48,4 +48,9 @@ window.onload = function() {
         session.mutateAll("transpose");
     });
 
+    document.getElementById("selectedBtn").addEventListener("click", function() {
+        x = session.getSelected();
+        console.log(x);
+    });
+
 };
