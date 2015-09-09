@@ -16,6 +16,10 @@ window.onload = function() {
     session.updateDisplays();
     // c0.invert(session.scale);
 
+    var c1 = session.chromosomes[1];
+    var cc = session.crossover(0, 1);
+    console.log("crossover'd: " + cc.toHTML());
+
     document.getElementById("playBtn").addEventListener("click", function() {
         session.play();
     });

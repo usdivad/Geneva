@@ -122,10 +122,45 @@ Geneva.Session.prototype = {
         }
     },
 
-    crossover: function(ci, cj) {
+    crossover: function(ci, cj, mr) {
+        if (mr === undefined) {
+            mr = Geneva.defaults.mutationRate;
+        }
+        // determine which goes first/second
+        var cdice = Math.random();
         var c0 = this.chromosomes[ci];
         var c1 = this.chromosomes[cj];
+        if (cdice > 0.5) {
+            c0 = this.chromosomes[cj];
+            c1 = this.chromosomes[ci];
+        }
+        var n0 = c0.notes;
+        var n1 = c1.notes;
 
+        // random crossing point
+        var crossIdx = Math.floor(Math.random()*Math.min(n0.length, n1.length));
+        var n0 = n0.slice(0, crossIdx);
+        var n1 = n1.slice(crossIdx);
+
+        // mutate (or not) according to mutation rate
+        var mutate_n0 = (Math.random() < mr);
+        var mutate_n1 = (Math.random() < mr);
+
+        if (mutate_n0) {
+            var ctemp = new Geneva.Chromosome(n0);
+            ctemp.mutate(this.scale);
+            n0 = ctemp.notes;
+        }
+        if (mutate_n1) {
+            var ctemp = new Geneva.Chromosome(n1);
+            ctemp.mutate(this.scale);
+            n1 = ctemp.notes;
+        }
+
+        // combine the two note arrs
+        var n2 = n0.concat(n1);
+        var c2 = new Geneva.Chromosome(n2);
+        return c2;
     },
 
     play: function() {

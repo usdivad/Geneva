@@ -51,10 +51,11 @@ Geneva.REST = -1;
 // Geneva.HOLD = -2;
 
 
-Geneva.phraseMutationMethods = [Geneva.invert, Geneva.transpose, Geneva.retrograde];
-Geneva.noteMutationMethods = [Geneva.addNote, Geneva.removeNote, Geneva.scaleNoteRhythm];
-Geneva.pitchMutationMethods = [];
-Geneva.rhythmMutationMethods = [];
+Geneva.mutationMethods = ["reverse", "rotate", "invert", "sortAsc", "sortDesc", "transpose"];
+// Geneva.phraseMutationMethods = [Geneva.invert, Geneva.transpose, Geneva.retrograde];
+// Geneva.noteMutationMethods = [Geneva.addNote, Geneva.removeNote, Geneva.scaleNoteRhythm];
+// Geneva.pitchMutationMethods = [];
+// Geneva.rhythmMutationMethods = [];
 
 
 //  Functions
