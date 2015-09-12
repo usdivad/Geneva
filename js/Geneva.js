@@ -32,10 +32,10 @@ Geneva.defaults = {
     tuning: Geneva.tunings.shierlu,
     matrix: Geneva.scaleMatrices.yu,
     root: 220,
-    numChromosomes: 4,
+    numChromosomes: 10,
     numNotes: 16,
-    octaveRange: 3,
-    maxStepSize: 2,
+    octaveRange: 5,
+    maxStepSize: 3,
     restPrb: 5/24,
 
     // Gen

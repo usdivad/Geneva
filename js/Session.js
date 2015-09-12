@@ -171,8 +171,10 @@ Geneva.Session.prototype = {
             if (this.selected.length < 2) { // mutate
                 var parent = this.chromosomes[this.selected[0]];
                 for (var i=0; i<this.chromosomes.length; i++) {
-                    this.chromosomes[i].notes = parent.notes;
+                    this.chromosomes[i].notes = parent.notes.copy();
                     this.chromosomes[i].mutate(this.scale);
+                    // console.log("parent: " + parent.toHTML());
+                    // console.log("child: " + this.chromosomes[i].toHTML());
                 }
             }
             else { // crossover
