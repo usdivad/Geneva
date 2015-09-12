@@ -57,4 +57,8 @@ window.onload = function() {
         console.log(x);
     });
 
+    document.getElementById("evolveBtn").addEventListener("click", function() {
+        session.evolve();
+    });
+
 };

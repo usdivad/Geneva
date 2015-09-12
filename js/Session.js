@@ -22,6 +22,8 @@ Geneva.Session = function(tunings, root) {
     this.root = root;
     this.chromosomes = [];
     this.interval = T("interval");
+    this.selected = [];
+    this.generations = 0;
 };
 
 Geneva.Session.prototype = {
@@ -59,7 +61,8 @@ Geneva.Session.prototype = {
                     // console.log(this);
                     this.style.color = "#FF6200";
                     console.log(i);
-                    session.chromosomes[i].selected = true;
+                    session.chromosomes[i].selected = true; // deprecated
+                    session.selected.push(i);
                 });
             })(i, this);
         }
@@ -163,6 +166,35 @@ Geneva.Session.prototype = {
         return c2;
     },
 
+    evolve: function() {
+        if (this.selected.length > 0) {
+            if (this.selected.length < 2) { // mutate
+                var parent = this.chromosomes[this.selected[0]];
+                for (var i=0; i<this.chromosomes.length; i++) {
+                    this.chromosomes[i].notes = parent.notes;
+                    this.chromosomes[i].mutate(this.scale);
+                }
+            }
+            else { // crossover
+                // var parent1 = this.chromosomes[this.selected[0]];
+                // var parent2 = this.chromosomes[this.selected[1]];
+                for (var i=0; i<this.chromosomes.length; i++) {
+                    this.chromosomes[i] = this.crossover(this.selected[0], this.selected[1]);
+                }
+            }
+    
+        }
+        else { // repopulate / mutate all
+            for (var i=0; i<this.chromosomes.length; i++) {
+                this.chromosomes[i].mutate(this.scale);
+            }
+        }
+
+        this.selected = [];
+        this.generations++;
+        this.updateDisplays();
+    },
+
     play: function() {
         var chromosomes = this.chromosomes;
         var scale = this.scale;
@@ -200,7 +232,10 @@ Geneva.Session.prototype = {
 
     updateDisplays: function() {
         for (var i=0; i<this.chromosomes.length; i++) {
-            document.getElementById("chromosome" + i).innerHTML = this.chromosomes[i].toHTML();
+            var cd = document.getElementById("chromosome" + i);
+            cd.innerHTML = this.chromosomes[i].toHTML();
+            cd.style.color = "#000000";
         }
+        document.getElementById("genCount").innerHTML = this.generations + " generations";
     }
 };

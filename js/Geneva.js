@@ -40,7 +40,7 @@ Geneva.defaults = {
 
     // Gen
     crossoverRate: 0.7,
-    mutationRate: 0.2,
+    mutationRate: 1,
     maxRotations: 5,
 
     // Performance
