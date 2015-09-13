@@ -210,20 +210,20 @@ Geneva.Session.prototype = {
 
         // for initial testing; to implement rhythm move the actual T("interval") to Chromosome class
         this.interval = T("interval", {interval: interval}, function(count) {
-            console.log("<!--count " + count + "-->");
+            // console.log("<!--count " + count + "-->");
             for (var i=0; i<chromosomes.length; i++) {
                 var chromosome = chromosomes[i];
                 var note = chromosome.notes[count % chromosome.notes.length];
 
                 if (note.scaleDegree < 0) {
-                    console.log("chromosome " + i + " is resting");
+                    // console.log("chromosome " + i + " is resting");
                     continue;
                 }
 
                 var freq = scale[note.scaleDegree] * (note.octave + 1) * root;
                 // console.log("ratio:" + scale[note.scaleDegree] + ", sd:" + note.scaleDegree + ", oct:" + note.octave + ", root:" + root);
                 chromosome.synth.noteOnWithFreq(freq, vel);
-                console.log("chromosome " + i + " playing scale degree " + note.scaleDegree + " (" + freq + "Hz)");
+                // console.log("chromosome " + i + " playing scale degree " + note.scaleDegree + " (" + freq + "Hz)");
             }
         }).start();
     },

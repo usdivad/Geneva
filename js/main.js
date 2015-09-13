@@ -11,7 +11,8 @@ window.onload = function() {
     var c0 = session.chromosomes[0];
     console.log("c0: " + c0.toHTML());
 
-    c0 = new Geneva.Chromosome([1,3,1,3,4,3,1,1,1,3,4,0,1,3,0,1], session.scale);
+    var n0 = Array.apply(null, Array(Geneva.defaults.numNotes)).map(Number.prototype.valueOf, 0);
+    c0 = new Geneva.Chromosome(n0, session.scale);
     session.chromosomes[0] = c0;
     session.updateDisplays();
     // c0.invert(session.scale);

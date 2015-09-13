@@ -33,7 +33,7 @@ Geneva.defaults = {
     matrix: Geneva.scaleMatrices.yu,
     root: 220,
     numChromosomes: 10,
-    numNotes: 16,
+    numNotes: 32,
     octaveRange: 5,
     maxStepSize: 3,
     restPrb: 5/24,
@@ -44,7 +44,7 @@ Geneva.defaults = {
     maxRotations: 5,
 
     // Performance
-    interval: 200,
+    interval: 125,
     velocity: 64
 };
 Geneva.REST = -1;
@@ -52,6 +52,7 @@ Geneva.REST = -1;
 
 
 Geneva.mutationMethods = ["reverse", "rotate", "invert", "sortAsc", "sortDesc", "transpose"];
+Geneva.mutationPrbs =    [ 0.20,      0.20,     0.20,     0.05,      0.05,       0.3];
 // Geneva.phraseMutationMethods = [Geneva.invert, Geneva.transpose, Geneva.retrograde];
 // Geneva.noteMutationMethods = [Geneva.addNote, Geneva.removeNote, Geneva.scaleNoteRhythm];
 // Geneva.pitchMutationMethods = [];

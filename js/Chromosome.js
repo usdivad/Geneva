@@ -97,7 +97,8 @@ Geneva.Chromosome.prototype = {
     },
 
     mutate: function(scale) {
-        var mutationMethod = Geneva.mutationMethods.choose();
+        var mutationMethod = Geneva.mutationMethods.wchoose(Geneva.mutationPrbs);
+        console.log(mutationMethod);
         switch(mutationMethod) {
             case "reverse":
                 this.reverse();
@@ -168,7 +169,7 @@ Geneva.Chromosome.prototype = {
             str += "note after: " + note.toString() + "\n\n";
             
             // Debug output
-            console.log(str);
+            // console.log(str);
             
             this.notes[i] = note;
         }
