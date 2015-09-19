@@ -166,7 +166,7 @@ Geneva.Session.prototype = {
         return c2;
     },
 
-    evolve: function() {
+    evolve: function(animators) {
         if (this.selected.length > 0) {
             if (this.selected.length < 2) { // mutate
                 var parent = this.chromosomes[this.selected[0]];
@@ -182,6 +182,9 @@ Geneva.Session.prototype = {
                 // var parent2 = this.chromosomes[this.selected[1]];
                 for (var i=0; i<this.chromosomes.length; i++) {
                     this.chromosomes[i] = this.crossover(this.selected[0], this.selected[1]);
+                    if (animators !== undefined) {
+                        this.chromosomes[i].bindAnimator(animators[i]);
+                    } 
                 }
             }
     

@@ -21,46 +21,7 @@ window.onload = function() {
     var cc = session.crossover(0, 1);
     console.log("crossover'd: " + cc.toHTML());
 
-    document.getElementById("playBtn").addEventListener("click", function() {
-        session.play();
-    });
-
-    document.getElementById("stopBtn").addEventListener("click", function() {
-        session.stop();
-    });
-
-    document.getElementById("reverseBtn").addEventListener("click", function() {
-        session.mutateAll("reverse");
-    });
-
-    document.getElementById("rotateBtn").addEventListener("click", function() {
-        session.mutateAll("rotate");
-    });
-
-    document.getElementById("invertBtn").addEventListener("click", function() {
-        session.mutateAll("invert");
-    });
-
-    document.getElementById("sortAscBtn").addEventListener("click", function() {
-        session.mutateAll("sortAsc");
-    });
-
-    document.getElementById("sortDescBtn").addEventListener("click", function() {
-        session.mutateAll("sortDesc");
-    });
-
-    document.getElementById("transposeBtn").addEventListener("click", function() {
-        session.mutateAll("transpose");
-    });
-
-    document.getElementById("selectedBtn").addEventListener("click", function() {
-        x = session.getSelected();
-        console.log(x);
-    });
-
-    document.getElementById("evolveBtn").addEventListener("click", function() {
-        session.evolve();
-    });
+    
 
     // Setup scene with three.js
     var camera, scene, renderer;
@@ -401,6 +362,51 @@ window.onload = function() {
         renderer.render( scene, camera );
 
     }
+
+
+    document.getElementById("playBtn").addEventListener("click", function() {
+        session.play();
+    });
+
+    document.getElementById("stopBtn").addEventListener("click", function() {
+        session.stop();
+    });
+
+    document.getElementById("reverseBtn").addEventListener("click", function() {
+        session.mutateAll("reverse");
+    });
+
+    document.getElementById("rotateBtn").addEventListener("click", function() {
+        session.mutateAll("rotate");
+    });
+
+    document.getElementById("invertBtn").addEventListener("click", function() {
+        session.mutateAll("invert");
+    });
+
+    document.getElementById("sortAscBtn").addEventListener("click", function() {
+        session.mutateAll("sortAsc");
+    });
+
+    document.getElementById("sortDescBtn").addEventListener("click", function() {
+        session.mutateAll("sortDesc");
+    });
+
+    document.getElementById("transposeBtn").addEventListener("click", function() {
+        session.mutateAll("transpose");
+    });
+
+    document.getElementById("selectedBtn").addEventListener("click", function() {
+        x = session.getSelected();
+        console.log(x);
+    });
+
+    document.getElementById("evolveBtn").addEventListener("click", function() {
+        session.evolve(objects);
+        // for (var i=0; i<session.length; i++) {
+        //     session.chromosomes[i].bindAnimator(objects[i]);
+        // }
+    });
 
 
 };
