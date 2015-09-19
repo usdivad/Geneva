@@ -6,6 +6,7 @@ Geneva.Chromosome = function(notes, scale) {
     // this.synth = T("OscGen", {env: T("perc", {a: (Math.random()*50) + 25, r: Math.random() * Geneva.defaults.interval}), mul:0.1}).play();
     this.fitness = 0;
     this.selected = false; // deprecated, use Session.selected list now
+    this.animator = null;
 
     if (notes !== undefined) {
         if (typeof(notes[0]) === "number") {
@@ -233,6 +234,22 @@ Geneva.Chromosome.prototype = {
             // }
 
             this.notes[i] = note;
+        }
+    },
+
+    bindAnimator: function(a) {
+        this.animator = a;
+    },
+
+    animate: function(freq, vel) {
+        if (this.animator) {
+            // console.log(this.animator);
+            if (freq < 0) { // "rest"
+                this.animator.position.y = 10;
+            }
+            else {
+                this.animator.position.y = freq/10;
+            }
         }
     },
 

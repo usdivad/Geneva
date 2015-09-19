@@ -217,12 +217,14 @@ Geneva.Session.prototype = {
 
                 if (note.scaleDegree < 0) {
                     // console.log("chromosome " + i + " is resting");
+                    chromosome.animate(-1);
                     continue;
                 }
 
                 var freq = scale[note.scaleDegree] * (note.octave + 1) * root;
                 // console.log("ratio:" + scale[note.scaleDegree] + ", sd:" + note.scaleDegree + ", oct:" + note.octave + ", root:" + root);
                 chromosome.synth.noteOnWithFreq(freq, vel);
+                chromosome.animate(freq, vel);
                 // console.log("chromosome " + i + " playing scale degree " + note.scaleDegree + " (" + freq + "Hz)");
             }
         }).start();
