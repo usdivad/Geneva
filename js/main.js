@@ -174,7 +174,7 @@ window.onload = function() {
                     break;
 
                 case 32: // space
-                    if ( canJump === true ) velocity.y += 1000;
+                    if ( canJump === true ) velocity.y += 500;
                     canJump = false;
                     break;
 
@@ -324,17 +324,18 @@ window.onload = function() {
 
             var time = performance.now();
             var delta = ( time - prevTime ) / 1000;
+            var accVal = 1200.0;
 
             velocity.x -= velocity.x * 10.0 * delta;
             velocity.z -= velocity.z * 10.0 * delta;
 
             velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
 
-            if ( moveForward ) velocity.z -= 400.0 * delta;
-            if ( moveBackward ) velocity.z += 400.0 * delta;
+            if ( moveForward ) velocity.z -= accVal * delta;
+            if ( moveBackward ) velocity.z += accVal * delta;
 
-            if ( moveLeft ) velocity.x -= 400.0 * delta;
-            if ( moveRight ) velocity.x += 400.0 * delta;
+            if ( moveLeft ) velocity.x -= accVal * delta;
+            if ( moveRight ) velocity.x += accVal * delta;
 
             if ( isOnObject === true ) {
                 velocity.y = Math.max( 0, velocity.y );
