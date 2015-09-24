@@ -24,6 +24,7 @@ Geneva.Session = function(tunings, root) {
     this.interval = T("interval");
     this.selected = [];
     this.generations = 0;
+    this.characterPosition = null;
 };
 
 Geneva.Session.prototype = {
@@ -201,11 +202,13 @@ Geneva.Session.prototype = {
     },
 
     play: function() {
+        console.log(this);
         var chromosomes = this.chromosomes;
         var scale = this.scale;
         var root = this.root;
         var interval = Geneva.defaults.interval;
-        var vel = Geneva.defaults.velocity;
+        var characterPosition = this.characterPosition;
+        // var vel = Geneva.defaults.velocity;
 
         for (var i=0; i<chromosomes.length; i++) {
             chromosomes[i].synth.play();
@@ -216,19 +219,38 @@ Geneva.Session.prototype = {
             // console.log("<!--count " + count + "-->");
             for (var i=0; i<chromosomes.length; i++) {
                 var chromosome = chromosomes[i];
-                var note = chromosome.notes[count % chromosome.notes.length];
 
+                // determine pitch
+                var note = chromosome.notes[count % chromosome.notes.length];
                 if (note.scaleDegree < 0) {
                     // console.log("chromosome " + i + " is resting");
                     chromosome.animate(-1);
                     continue;
                 }
-
                 var freq = scale[note.scaleDegree] * (note.octave + 1) * root;
                 // console.log("ratio:" + scale[note.scaleDegree] + ", sd:" + note.scaleDegree + ", oct:" + note.octave + ", root:" + root);
+
+                // determine vel
+                var vel = Geneva.defaults.velocity;
+                if (chromosome.animator && characterPosition) {
+                    var a = chromosome.animator.position;
+                    var c = characterPosition;
+                    var dist = Geneva.distance(a.x, c.x, 0, 0, a.z, c.z);
+                    // vel = Math.max(0, vel - (dist));
+                    vel = Math.max(0, (1-(dist/100))*vel);
+                    console.log("VEL " + i + ": " + vel + "(dist " + dist + ")");
+                    console.log("animator position:");
+                    console.log(a);
+                    console.log("character position:");
+                    console.log(c);
+                }
+
+                // play
                 chromosome.synth.noteOnWithFreq(freq, vel);
-                chromosome.animate(freq, vel);
                 // console.log("chromosome " + i + " playing scale degree " + note.scaleDegree + " (" + freq + "Hz)");
+                
+                // animate
+                chromosome.animate(freq, vel); 
             }
         }).start();
     },

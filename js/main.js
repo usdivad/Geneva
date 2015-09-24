@@ -11,15 +11,16 @@ window.onload = function() {
     var c0 = session.chromosomes[0];
     console.log("c0: " + c0.toHTML());
 
-    var n0 = Array.apply(null, Array(Geneva.defaults.numNotes)).map(Number.prototype.valueOf, 0);
-    c0 = new Geneva.Chromosome(n0, session.scale);
-    session.chromosomes[0] = c0;
-    session.updateDisplays();
-    // c0.invert(session.scale);
+    // init tests
+    // var n0 = Array.apply(null, Array(Geneva.defaults.numNotes)).map(Number.prototype.valueOf, 0);
+    // c0 = new Geneva.Chromosome(n0, session.scale);
+    // session.chromosomes[0] = c0;
+    // session.updateDisplays();
+    // // c0.invert(session.scale);
 
-    var c1 = session.chromosomes[1];
-    var cc = session.crossover(0, 1);
-    console.log("crossover'd: " + cc.toHTML());
+    // var c1 = session.chromosomes[1];
+    // var cc = session.crossover(0, 1);
+    // console.log("crossover'd: " + cc.toHTML());
 
     
 
@@ -247,12 +248,15 @@ window.onload = function() {
 
         geometry = new THREE.BoxGeometry( 20, 20, 20 );
 
+        // color setting
         for ( var i = 0, l = geometry.faces.length; i < l; i ++ ) {
 
             var face = geometry.faces[ i ];
-            face.vertexColors[ 0 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+            // face.vertexColors[ 0 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+            face.vertexColors[0] = new THREE.Color(0x2194ce);
             face.vertexColors[ 1 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-            face.vertexColors[ 2 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+            // face.vertexColors[ 2 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
+            face.vertexColors[2] = new THREE.Color(0x2194ce);
 
         }
 
@@ -268,10 +272,10 @@ window.onload = function() {
 
             var halfway = session.chromosomes.length/2;
             if (i < halfway) {
-                mesh.position.x = -30 * Math.abs(halfway-i);
+                mesh.position.x = -100 * Math.abs(halfway-i);
             }
             else {
-                mesh.position.x = 30 * Math.abs(halfway-i);
+                mesh.position.x = 100 * Math.abs(halfway-i);
             }
             mesh.position.y = 10;
             mesh.position.z = -50;
@@ -284,6 +288,7 @@ window.onload = function() {
 
             // bind to chromosomes
             session.chromosomes[i].bindAnimator(mesh);
+            // session.chromosomes[i].distance = Geneva.distance(mesh.position.x, velocity.x, mesh.position.y, velocity.y, mesh.position.z, velocity.z);
 
         }
 
@@ -362,6 +367,8 @@ window.onload = function() {
 
         renderer.render( scene, camera );
 
+        session.characterPosition = controls.getObject().position;
+
     }
 
 
@@ -408,6 +415,5 @@ window.onload = function() {
         //     session.chromosomes[i].bindAnimator(objects[i]);
         // }
     });
-
 
 };

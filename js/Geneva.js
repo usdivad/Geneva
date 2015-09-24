@@ -32,7 +32,7 @@ Geneva.defaults = {
     tuning: Geneva.tunings.shierlu,
     matrix: Geneva.scaleMatrices.yu,
     root: 220,
-    numChromosomes: 10,
+    numChromosomes: 2,
     numNotes: 32,
     octaveRange: 5,
     maxStepSize: 3,
@@ -68,4 +68,12 @@ Geneva.createScale = function(tunings, matrix) {
         }
     }
     return scale;
+}
+
+Geneva.distance =  function(x0,y0,z0,x1,y1,z1) {
+    var dx = x1 - x0;
+    var dy = y1 - y0;
+    var dz = z1 - z0;
+
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
 }
