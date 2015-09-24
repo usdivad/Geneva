@@ -32,7 +32,7 @@ Geneva.defaults = {
     tuning: Geneva.tunings.shierlu,
     matrix: Geneva.scaleMatrices.yu,
     root: 220,
-    numChromosomes: 2,
+    numChromosomes: 10,
     numNotes: 32,
     octaveRange: 5,
     maxStepSize: 3,
@@ -44,7 +44,7 @@ Geneva.defaults = {
     maxRotations: 5,
 
     // Performance
-    interval: 125,
+    interval: 200,
     velocity: 64
 };
 Geneva.REST = -1;

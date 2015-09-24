@@ -235,14 +235,12 @@ Geneva.Session.prototype = {
                 if (chromosome.animator && characterPosition) {
                     var a = chromosome.animator.position;
                     var c = characterPosition;
-                    var dist = Geneva.distance(a.x, c.x, 0, 0, a.z, c.z);
+                    var dist = Geneva.distance(a.x, 0, a.z, c.x, 0, c.z);
                     // vel = Math.max(0, vel - (dist));
-                    vel = Math.max(0, (1-(dist/100))*vel);
+                    vel = Math.max(0, (1-(dist/75))*vel);
                     console.log("VEL " + i + ": " + vel + "(dist " + dist + ")");
-                    console.log("animator position:");
-                    console.log(a);
-                    console.log("character position:");
-                    console.log(c);
+                    console.log("animator position: " + [a.x, a.y, a.z].join(","));
+                    console.log("character position:" + [c.x, c.y, c.z].join(","));
                 }
 
                 // play

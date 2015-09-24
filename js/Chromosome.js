@@ -2,11 +2,12 @@
 Geneva.Chromosome = function(notes, scale) {
     this.notes = [];
     // this.synth = T("PluckGen", {env: T("perc", {a:50, r: 1000}), mul: 0.1}).play();
-    this.synth = T("OscGen", {env: T("perc", {a: 10, r: 50}), mul: 1/Geneva.defaults.numChromosomes}).play();
-    // this.synth = T("OscGen", {env: T("perc", {a: (Math.random()*50) + 25, r: Math.random() * Geneva.defaults.interval}), mul:0.1}).play();
+    // this.synth = T("OscGen", {env: T("perc", {a: 10, r: 50}), mul: 1/Geneva.defaults.numChromosomes}).play();
+    this.synth = T("OscGen", {env: T("perc", {a: (Math.random()*50) + 25, r: Math.random() * Geneva.defaults.interval}), mul:1/Geneva.defaults.numChromosomes}).play();
     this.fitness = 0;
     this.selected = false; // deprecated, use Session.selected list now
     this.animator = null;
+    this.vel = Geneva.defaults.velocity;
 
     if (notes !== undefined) {
         if (typeof(notes[0]) === "number") {

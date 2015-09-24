@@ -272,10 +272,10 @@ window.onload = function() {
 
             var halfway = session.chromosomes.length/2;
             if (i < halfway) {
-                mesh.position.x = -100 * Math.abs(halfway-i);
+                mesh.position.x = -50 * Math.abs(halfway-i);
             }
             else {
-                mesh.position.x = 100 * Math.abs(halfway-i);
+                mesh.position.x = 50 * Math.abs(halfway-i);
             }
             mesh.position.y = 10;
             mesh.position.z = -50;
