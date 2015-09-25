@@ -44,6 +44,7 @@ window.onload = function() {
             var tweetUser = elm.getElementsByClassName("user")[0].innerText.replace(/\s+/g, " ");
             console.log(tweetContent + " by " + tweetUser);
             session.chromosomes[i].tweet = tweetContent;
+            session.chromosomes[i].updateAnimator();
         }
     }
 

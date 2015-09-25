@@ -140,11 +140,16 @@ Geneva.Session.prototype = {
         }
         var n0 = c0.notes;
         var n1 = c1.notes;
+        var t0 = c0.tweet;
+        var t1 = c1.tweet;
 
         // random crossing point
         var crossIdx = Math.floor(Math.random()*Math.min(n0.length, n1.length));
-        var n0 = n0.slice(0, crossIdx);
-        var n1 = n1.slice(crossIdx);
+        var tweetCrossIdx = Math.floor(Math.random()*Math.min(t0.length, t1.length));
+        n0 = n0.slice(0, crossIdx);
+        n1 = n1.slice(crossIdx);
+        t0 = t0.slice(0, tweetCrossIdx);
+        t1 = t1.slice(tweetCrossIdx);
 
         // mutate (or not) according to mutation rate
         var mutate_n0 = (Math.random() < mr);
@@ -154,16 +159,20 @@ Geneva.Session.prototype = {
             var ctemp = new Geneva.Chromosome(n0);
             ctemp.mutate(this.scale);
             n0 = ctemp.notes;
+            t0 = Geneva.mutateText(t0);
         }
         if (mutate_n1) {
             var ctemp = new Geneva.Chromosome(n1);
             ctemp.mutate(this.scale);
             n1 = ctemp.notes;
+            t0 = Geneva.mutateText(t0);
         }
 
         // combine the two note arrs
         var n2 = n0.concat(n1);
+        var t2 = t0.concat(t1);
         var c2 = new Geneva.Chromosome(n2);
+        c2.tweet = t2;
         return c2;
     },
 
@@ -176,6 +185,8 @@ Geneva.Session.prototype = {
                     this.chromosomes[i].mutate(this.scale);
                     // console.log("parent: " + parent.toHTML());
                     // console.log("child: " + this.chromosomes[i].toHTML());
+                    this.chromosomes[i].tweet = Geneva.mutateText(this.chromosomes[i].tweet);
+                    this.chromosomes[i].updateAnimator();
                 }
             }
             else { // crossover
@@ -185,6 +196,7 @@ Geneva.Session.prototype = {
                     this.chromosomes[i] = this.crossover(this.selected[0], this.selected[1]);
                     if (animators !== undefined) {
                         this.chromosomes[i].bindAnimator(animators[i]);
+                        this.chromosomes[i].updateAnimator();
                     } 
                 }
             }

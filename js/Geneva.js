@@ -71,7 +71,7 @@ Geneva.createScale = function(tunings, matrix) {
         }
     }
     return scale;
-}
+};
 
 Geneva.distance =  function(x0,y0,z0,x1,y1,z1) {
     var dx = x1 - x0;
@@ -86,4 +86,17 @@ Geneva.distance =  function(x0,y0,z0,x1,y1,z1) {
 
 
     return Math.sqrt(dx * dx + dy * dy + dz * dz);
+};
+
+Geneva.mutateText = function(text) {
+    var newText = "";
+    var dice = Math.random();
+    if (dice > 0.5) {
+        newText = text.split(" ").reverse().join(" ");
+    }
+    else {
+        newText = text.split(" ").scramble().join(" ");
+    }
+
+    return newText;
 }

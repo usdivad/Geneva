@@ -258,8 +258,13 @@ Geneva.Chromosome.prototype = {
             else {
                 this.animator.position.y = freq/10;
             }
+        }
+        // console.log(this.tweet);
+    },
 
-            var dynamicTexture = new THREEx.DynamicTexture(1024, 1024);
+    updateAnimator: function() {
+        if (this.animator) {
+           var dynamicTexture = new THREEx.DynamicTexture(1024, 1024);
             dynamicTexture.font = "Helvetica";
             dynamicTexture.clear("white");
             dynamicTexture.drawTextCooked({
@@ -271,7 +276,6 @@ Geneva.Chromosome.prototype = {
 
             this.animator.material.map = dynamicTexture.texture;
         }
-        // console.log(this.tweet);
     },
 
     toString: function() {
