@@ -30,13 +30,13 @@ Geneva.tunings = {
 Geneva.defaults = {
     // Population settings
     tuning: Geneva.tunings.shierlu,
-    matrix: Geneva.scaleMatrices.yu,
+    matrix: Geneva.scaleMatrices.ones,
     root: 220,
     numChromosomes: 10,
     numNotes: 32,
     octaveRange: 5,
     maxStepSize: 3,
-    restPrb: 5/24,
+    restPrb: 3/5,
 
     // Gen
     crossoverRate: 0.7,
@@ -44,7 +44,7 @@ Geneva.defaults = {
     maxRotations: 5,
 
     // Performance
-    interval: 1000,
+    interval: 250,
     velocity: 64,
     accFactor: 50
 };
@@ -77,6 +77,13 @@ Geneva.distance =  function(x0,y0,z0,x1,y1,z1) {
     var dx = x1 - x0;
     var dy = y1 - y0;
     var dz = z1 - z0;
+
+    // adjustments for playability
+    // if (dz > dx) {
+    //     dx = 0;
+    // }
+    dz *= 0.5;
+
 
     return Math.sqrt(dx * dx + dy * dy + dz * dz);
 }

@@ -14,6 +14,7 @@ Geneva.Chromosome = function(notes, scale) {
     this.selected = false; // deprecated, use Session.selected list now
     this.animator = null;
     this.vel = Geneva.defaults.velocity;
+    this.tweet = "The greatest thing you'll ever learn is just to #love and be loved in return";
 
     if (notes !== undefined) {
         if (typeof(notes[0]) === "number") {
@@ -257,7 +258,20 @@ Geneva.Chromosome.prototype = {
             else {
                 this.animator.position.y = freq/10;
             }
+
+            var dynamicTexture = new THREEx.DynamicTexture(1024, 1024);
+            dynamicTexture.font = "Helvetica";
+            dynamicTexture.clear("white");
+            dynamicTexture.drawTextCooked({
+                text: this.tweet,
+            });
+
+            // var material = new THREE.MeshPhongMaterial( { map: dynamicTexture.texture, specular: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.VertexColors } );
+            // this.animator.material = material;
+
+            this.animator.material.map = dynamicTexture.texture;
         }
+        // console.log(this.tweet);
     },
 
     toString: function() {

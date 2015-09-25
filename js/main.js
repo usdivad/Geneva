@@ -43,6 +43,7 @@ window.onload = function() {
             var tweetContent = elm.getElementsByClassName("tweet")[0].innerText;
             var tweetUser = elm.getElementsByClassName("user")[0].innerText.replace(/\s+/g, " ");
             console.log(tweetContent + " by " + tweetUser);
+            session.chromosomes[i].tweet = tweetContent;
         }
     }
 
@@ -290,7 +291,19 @@ window.onload = function() {
         // this is where the boxes get created
         for ( var i = 0; i < session.chromosomes.length; i ++ ) {
 
-            material = new THREE.MeshPhongMaterial( { specular: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.VertexColors } );
+            var dynamicTexture = new THREEx.DynamicTexture(1024, 1024);
+            dynamicTexture.font = "Helvetica";
+            dynamicTexture.clear("white");
+            dynamicTexture.drawTextCooked({
+                text: "The greatest thing you'll ever learn is just to #love and be loved in return " + i,
+            });
+
+            material = new THREE.MeshPhongMaterial( { map: dynamicTexture.texture, specular: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.VertexColors } );
+            
+            // material = new THREE.MeshBasicMaterial({
+            //     map: dynamicTexture.texture,
+            //     color: 0x000000
+            // });
 
             var mesh = new THREE.Mesh( geometry, material );
             // mesh.position.x = Math.floor( Math.random() * 20 - 10 ) * 20;
