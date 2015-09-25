@@ -199,6 +199,8 @@ Geneva.Session.prototype = {
         this.selected = [];
         this.generations++;
         this.updateDisplays();
+        this.interval.interval.value = Math.max(Geneva.defaults.accFactor, Math.abs(Geneva.defaults.interval - (this.generations * Geneva.defaults.accFactor)) % (Geneva.defaults.interval+1));
+        console.log(this.interval.interval.value);
     },
 
     play: function() {
@@ -206,8 +208,9 @@ Geneva.Session.prototype = {
         var chromosomes = this.chromosomes;
         var scale = this.scale;
         var root = this.root;
-        var interval = Geneva.defaults.interval;
+        var interval = Math.max(Geneva.defaults.accFactor, Math.abs(Geneva.defaults.interval - (this.generations * Geneva.defaults.accFactor)) % (Geneva.defaults.interval+1));
         var characterPosition = this.characterPosition;
+        var projectionRange = 75;
         // var vel = Geneva.defaults.velocity;
 
         for (var i=0; i<chromosomes.length; i++) {
@@ -237,10 +240,10 @@ Geneva.Session.prototype = {
                     var c = characterPosition;
                     var dist = Geneva.distance(a.x, 0, a.z, c.x, 0, c.z);
                     // vel = Math.max(0, vel - (dist));
-                    vel = Math.max(0, (1-(dist/75))*vel);
-                    console.log("VEL " + i + ": " + vel + "(dist " + dist + ")");
-                    console.log("animator position: " + [a.x, a.y, a.z].join(","));
-                    console.log("character position:" + [c.x, c.y, c.z].join(","));
+                    vel = Math.max(0, (1-(dist/projectionRange))*vel);
+                    // console.log("VEL " + i + ": " + vel + "(dist " + dist + ")");
+                    // console.log("animator position: " + [a.x, a.y, a.z].join(","));
+                    // console.log("character position:" + [c.x, c.y, c.z].join(","));
                 }
 
                 // play

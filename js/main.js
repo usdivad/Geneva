@@ -416,4 +416,6 @@ window.onload = function() {
         // }
     });
 
+    console.log(session.interval.interval.value);
+
 };

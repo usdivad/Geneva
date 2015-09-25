@@ -44,8 +44,9 @@ Geneva.defaults = {
     maxRotations: 5,
 
     // Performance
-    interval: 200,
-    velocity: 64
+    interval: 1000,
+    velocity: 64,
+    accFactor: 50
 };
 Geneva.REST = -1;
 // Geneva.HOLD = -2;
