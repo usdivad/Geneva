@@ -22,6 +22,33 @@ window.onload = function() {
     // var cc = session.crossover(0, 1);
     // console.log("crossover'd: " + cc.toHTML());
 
+
+    // Populate with tweets
+    var twitterConfig = {
+        "id": "647395831872679937",
+        "domId": "twitterDisplay",
+        "maxTweets": Geneva.defaults.numChromosomes,
+        "enableLinks": false,
+        "showUser": true,
+        "showImages": false,
+        "showRetweet": false,
+        "customCallback": handleTweets
+    };
+
+    function handleTweets(tweets) {
+        for (var i=0; i<tweets.length; i++) {
+            var tweet = tweets[i];
+            var elm = document.createElement("html");
+            elm.innerHTML = tweet;
+            var tweetContent = elm.getElementsByClassName("tweet")[0].innerText;
+            var tweetUser = elm.getElementsByClassName("user")[0].innerText.replace(/\s+/g, " ");
+            console.log(tweetContent + " by " + tweetUser);
+        }
+    }
+
+    console.log(twitterFetcher);
+    twitterFetcher.fetch(twitterConfig);
+
     
 
     // Setup scene with three.js
