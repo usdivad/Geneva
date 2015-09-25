@@ -1,9 +1,15 @@
 // Chromosome class
 Geneva.Chromosome = function(notes, scale) {
     this.notes = [];
+    this.env = T("perc", {a: (Math.random()*50) + 25, r: Math.random() * Geneva.defaults.interval});
+        this.mul = 5/Geneva.defaults.numChromosomes;
+        this.osc = T(Geneva.waves.choose());
     // this.synth = T("PluckGen", {env: T("perc", {a:50, r: 1000}), mul: 0.1}).play();
     // this.synth = T("OscGen", {env: T("perc", {a: 10, r: 50}), mul: 1/Geneva.defaults.numChromosomes}).play();
-    this.synth = T("OscGen", {env: T("perc", {a: (Math.random()*50) + 25, r: Math.random() * Geneva.defaults.interval}), mul:1/Geneva.defaults.numChromosomes}).play();
+    this.synth = [
+        T("OscGen", {osc: this.osc, env: this.env, mul: this.mul}).play(),
+        T("PluckGen", {env: this.env, mul: this.mul}).play()
+    ].choose();
     this.fitness = 0;
     this.selected = false; // deprecated, use Session.selected list now
     this.animator = null;

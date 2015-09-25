@@ -210,7 +210,7 @@ Geneva.Session.prototype = {
         var root = this.root;
         var interval = Math.max(Geneva.defaults.accFactor, Math.abs(Geneva.defaults.interval - (this.generations * Geneva.defaults.accFactor)) % (Geneva.defaults.interval+1));
         var characterPosition = this.characterPosition;
-        var projectionRange = 75;
+        var projectionRange = 100;
         // var vel = Geneva.defaults.velocity;
 
         for (var i=0; i<chromosomes.length; i++) {
