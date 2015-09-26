@@ -253,10 +253,13 @@ Geneva.Chromosome.prototype = {
         if (this.animator) {
             // console.log(this.animator);
             if (freq < 0) { // "rest"
-                this.animator.position.y = 10;
+                // this.animator.position.y = 10;
+                this.animator.scale.set(1, 1, 1);
             }
             else {
-                this.animator.position.y = freq/10;
+                // this.animator.position.y = freq/10;
+                var s = freq/200;
+                this.animator.scale.set(s, s, s);
             }
         }
         // console.log(this.tweet);
