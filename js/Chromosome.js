@@ -253,13 +253,13 @@ Geneva.Chromosome.prototype = {
         if (this.animator) {
             // console.log(this.animator);
             if (freq < 0) { // "rest"
-                // this.animator.position.y = 10;
-                this.animator.scale.set(1, 1, 1);
+                this.animator.position.y = 10;
+                // this.animator.scale.set(1, 1, 1);
             }
             else {
-                // this.animator.position.y = freq/10;
-                var s = freq/200;
-                this.animator.scale.set(s, s, s);
+                this.animator.position.y = freq/10;
+                // var s = freq/1000;
+                // this.animator.scale.set(s, s, s);
             }
         }
         // console.log(this.tweet);
@@ -269,7 +269,12 @@ Geneva.Chromosome.prototype = {
         if (this.animator) {
            var dynamicTexture = new THREEx.DynamicTexture(1024, 1024);
             dynamicTexture.font = "Helvetica";
-            dynamicTexture.clear("white");
+            if (this.selected) {
+                dynamicTexture.clear("green");
+            }
+            else {
+                dynamicTexture.clear("white");
+            }
             dynamicTexture.drawTextCooked({
                 text: this.tweet,
             });

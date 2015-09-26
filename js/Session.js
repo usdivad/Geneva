@@ -60,14 +60,21 @@ Geneva.Session.prototype = {
                 var id = "chromosome" + i;
                 document.getElementById(id).addEventListener("click", function(e) {
                     // console.log(this);
-                    this.style.color = "#FF6200";
+                    var chromosome = session.chromosomes[i];
                     console.log(i);
-                    session.chromosomes[i].selected = true; // deprecated
-                    session.selected.push(i);
+                    if (chromosome.selected) {
+                        chromosome.selected = false;
+                        this.style.color = "#000000";
+                    }
+                    else {
+                        chromosome.selected = true;
+                        this.style.color = "#FF6200";
+                        // session.selected.push(i);
+                    }
+                    chromosome.updateAnimator();
                 });
             })(i, this);
         }
-
     },
 
     getSelected: function() {
@@ -126,17 +133,16 @@ Geneva.Session.prototype = {
         }
     },
 
-    crossover: function(ci, cj, mr) {
+    crossover: function(c0, c1, mr) {
         if (mr === undefined) {
             mr = Geneva.defaults.mutationRate;
         }
         // determine which goes first/second
         var cdice = Math.random();
-        var c0 = this.chromosomes[ci];
-        var c1 = this.chromosomes[cj];
         if (cdice > 0.5) {
-            c0 = this.chromosomes[cj];
-            c1 = this.chromosomes[ci];
+            var ctemp = c0;
+            c0 = c1;
+            c1 = ctemp;
         }
         var n0 = c0.notes;
         var n1 = c1.notes;
@@ -177,9 +183,10 @@ Geneva.Session.prototype = {
     },
 
     evolve: function(animators) {
+        this.selected = this.getSelected();
         if (this.selected.length > 0) {
             if (this.selected.length < 2) { // mutate
-                var parent = this.chromosomes[this.selected[0]];
+                var parent = this.selected[0];
                 for (var i=0; i<this.chromosomes.length; i++) {
                     this.chromosomes[i].notes = parent.notes.copy();
                     this.chromosomes[i].mutate(this.scale);

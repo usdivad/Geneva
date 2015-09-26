@@ -214,6 +214,8 @@ window.onload = function() {
 
         var onKeyUp = function ( event ) {
 
+            // console.log(event.keyCode);
+
             switch( event.keyCode ) {
 
                 case 38: // up
@@ -236,6 +238,29 @@ window.onload = function() {
                     moveRight = false;
                     break;
 
+            }
+
+            // chromosome selecting using numpad
+            if (event.keyCode >= 48 && event.keyCode <= 57) {
+                var i = event.keyCode - 49;
+                var chromosome;
+                if (i < 0) {
+                    i = 9;
+                }
+
+                if (i > session.chromosomes.length) {
+                    i = session.chromosomes.length - 1;
+                }
+
+                var chromosome = session.chromosomes[i];
+                if (chromosome.selected) {
+                    chromosome.selected = false;
+                }
+                else {
+                    chromosome.selected = true;
+                }
+
+                chromosome.updateAnimator();
             }
 
         };
