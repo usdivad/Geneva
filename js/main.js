@@ -63,7 +63,7 @@ window.onload = function() {
     var raycaster;
 
     // mouse stuff
-    // var mouse_ray = new THREE.Raycaster(new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,0));
+    var mouse_ray = new THREE.Raycaster(new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,0));
     // var mouse_vector = new THREE.Vector3();
     // var mouse = {x:0, y:0, z:1};
     // var mouse_intersects = [];
@@ -168,6 +168,7 @@ window.onload = function() {
     var moveBackward = false;
     var moveLeft = false;
     var moveRight = false;
+    var mouseChromosome = false;
 
     var prevTime = performance.now();
     var velocity = new THREE.Vector3();
@@ -422,6 +423,24 @@ window.onload = function() {
                 canJump = true;
             }
 
+            // mouse_ray.ray.origin.copy(controls.getObject().position);
+            // mouse_ray.ray.direction.copy(controls.getDirection(mouse_ray.ray.origin));
+
+            // var mouse_intersects = mouse_ray.intersectObjects(objects);
+
+            // if (mouseChromosome) {
+            //     if (mouse_intersects.length > 0) {
+            //         var mi = mouse_intersects[0].object.index;
+            //         if (session.chromosomes[mi].selected) {
+            //             session.chromosomes[mi].selected = false;
+            //         }
+            //         else {
+            //             session.chromosomes[mi].selected = true;
+            //         }
+            //         session.chromosomes[mi].updateAnimator();
+            //     }
+            // }
+
             controls.getObject().translateX( velocity.x * delta );
             controls.getObject().translateY( velocity.y * delta );
             controls.getObject().translateZ( velocity.z * delta );
@@ -453,23 +472,49 @@ window.onload = function() {
         // mouse_ray.setFromCamera(mouse, camera);
         // mouse_ray.ray.origin.copy( controls.getObject().position );
         
-        var mouse_ray = new THREE.Raycaster(controls.getObject().position, controls.getDirection(controls.getObject().position));
+        // var mouse_ray = new THREE.Raycaster(controls.getObject().position, controls.getDirection(controls.getObject().position));
 
-        var mouse_intersects = mouse_ray.intersectObjects(objects);
-        console.log(mouse_intersects);
-        if (mouse_intersects.length > 0) {
-            var mi = mouse_intersects[0].object.index;
-            if (session.chromosomes[mi].selected) {
-                session.chromosomes[mi].selected = false;
+        var pos = controls.getObject().position;
+        var dir = new THREE.Vector3();
+        controls.getDirection(dir);
+        console.log("pos:");
+        console.log(pos);
+
+        var handler = function() {
+            mouse_ray.set(pos, dir);
+            // mouse_ray.ray.origin.copy(pos);
+            // mouse_ray.ray.direction.copy(controls.getDirection(mouse_ray.ray.origin));
+
+            console.log("position:");
+            console.log(mouse_ray.ray.origin);
+            var mouse_intersects = mouse_ray.intersectObjects(objects);
+            console.log(mouse_intersects);
+            if (mouse_intersects.length > 0) {
+                var mi = mouse_intersects[0].object.index;
+                if (session.chromosomes[mi].selected) {
+                    session.chromosomes[mi].selected = false;
+                }
+                else {
+                    session.chromosomes[mi].selected = true;
+                }
+                session.chromosomes[mi].updateAnimator();
             }
-            else {
-                session.chromosomes[mi].selected = true;
-            }
-            session.chromosomes[mi].updateAnimator();
-        }
+
+            // mouseChromosome = true;
+        };
+
+        return handler;
 
     }
-    document.addEventListener("mousedown", onMouseDown);
+    document.addEventListener("mousedown", function(e) {
+        var eh = onMouseDown();
+        eh();
+        // mouseChromosome = true;
+    });
+
+    document.addEventListener("mouseup", function() {
+        // mouseChromosome = false;
+    });
 
     document.getElementById("playBtn").addEventListener("click", function() {
         session.play();
