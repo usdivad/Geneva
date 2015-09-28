@@ -2,10 +2,11 @@
 Geneva.Chromosome = function(notes, scale) {
     this.notes = [];
     this.env = T("perc", {a: (Math.random()*50) + 25, r: Math.random() * Geneva.defaults.interval});
-        this.mul = 5/Geneva.defaults.numChromosomes;
-        this.osc = T(Geneva.waves.choose());
+    this.mul = 1/Geneva.defaults.numChromosomes;
+    this.osc = T(Geneva.waves.choose());
     // this.synth = T("PluckGen", {env: T("perc", {a:50, r: 1000}), mul: 0.1}).play();
     // this.synth = T("OscGen", {env: T("perc", {a: 10, r: 50}), mul: 1/Geneva.defaults.numChromosomes}).play();
+    // this.synth = T("OscGen", {env: this.env, mul: this.mul}).play();
     this.synth = [
         T("OscGen", {osc: this.osc, env: this.env, mul: this.mul}).play(),
         T("PluckGen", {env: this.env, mul: this.mul}).play()
@@ -15,6 +16,8 @@ Geneva.Chromosome = function(notes, scale) {
     this.animator = null;
     this.vel = Geneva.defaults.velocity;
     this.tweet = "The greatest thing you'll ever learn is just to #love and be loved in return";
+    // this.mul = 1/Geneva.defaults.numChromosomes;
+    this.muted = false;
 
     if (notes !== undefined) {
         if (typeof(notes[0]) === "number") {
@@ -270,6 +273,9 @@ Geneva.Chromosome.prototype = {
            var dynamicTexture = new THREEx.DynamicTexture(1024, 1024);
             dynamicTexture.font = "Helvetica";
             if (this.selected) {
+                dynamicTexture.clear("green");
+            }
+            else if (this.muted) {
                 dynamicTexture.clear("red");
             }
             else {

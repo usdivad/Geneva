@@ -17,6 +17,7 @@
         <script src="js/lib/PointerLockControls.js"></script>
         <script src="js/lib/twitterFetcher_min.js"></script>
         <script src="js/lib/threex.dynamictexture.js"></script>
+        <script src="js/lib/threejs-gui-crosshair.js"></script>
 
         <!-- Geneva -->
         <script src="js/Geneva.js"></script>
@@ -27,15 +28,19 @@
     </head>
     <body>
         <h1>Geneva</h1>
+        <div id="hud">
+            <div id="mode">Mode: <span class="selectSpan">Select</span></div>
+            <div id="genCount">0 generations</div>
+        </div>
         <div id="content">
             <div id="playback">
                 <h2>Playback</h2>
                 <div class="ctrlBtn" id="playBtn">Play</div>
                 <div class="ctrlBtn" id="stopBtn">Stop</div>
-            </div>
             <div id="game">
                 <h2>Game</h2>
                 <div class="ctrlBtn" id="gameBtn">Play Game</div>
+            </div>
             </div>
             <div id="chromosomes">
                 <h2>Chromosomes</h2>
@@ -45,7 +50,6 @@
                 <div class="ctrlBtn" id="evolveBtn">Evolve</div>
                 <br><br>
                 <div id="genCount">0 generations</div>
-            </div>
             <div id="mutate">
                 <h2>Mutate All</h2>
                 <div class="ctrlBtn" id="reverseBtn">Reverse</div>
@@ -58,6 +62,7 @@
             <div id="crossover">
                 <h2>Crossover</h2>
                 <div class="ctrlBtn" id="crossoverBtn">Crossover</div>
+            </div>
             </div>
             <div id="misc">
                 <h2>Misc</h2>

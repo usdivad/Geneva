@@ -25,6 +25,7 @@ Geneva.Session = function(tunings, root) {
     this.selected = [];
     this.generations = 0;
     this.characterPosition = null;
+    this.mode = "selected"; // selected, muted, soloed
 };
 
 Geneva.Session.prototype = {
@@ -88,6 +89,21 @@ Geneva.Session.prototype = {
         }
         console.log(selected.length + " selected chromosomes");
         return selected;
+    },
+
+    handleClick: function(i) {
+        var status = this.chromosomes[i][this.mode];
+        this.chromosomes[i].selected = false;
+        this.chromosomes[i].muted = false;
+
+        if (status) {
+            this.chromosomes[i][this.mode] = false;
+        }
+        else {
+            this.chromosomes[i][this.mode] = true;
+        }
+
+        this.chromosomes[i].updateAnimator();
     },
 
     invertAll: function() {
@@ -184,6 +200,7 @@ Geneva.Session.prototype = {
 
     evolve: function(animators) {
         this.selected = this.getSelected();
+        console.log(this.selected);
         if (this.selected.length > 0) {
             if (this.selected.length < 2) { // mutate
                 var parent = this.selected[0];
@@ -216,9 +233,17 @@ Geneva.Session.prototype = {
         }
 
         this.selected = [];
+        for (var i=0; i<this.chromosomes.length; i++) {
+            this.chromosomes[i].selected = false;
+            // this.chromosomes[i].muted = false;
+            this.chromosomes[i].updateAnimator();
+
+        }
         this.generations++;
         this.updateDisplays();
-        this.interval.interval.value = Math.max(Geneva.defaults.accFactor, Math.abs(Geneva.defaults.interval - (this.generations * Geneva.defaults.accFactor)) % (Geneva.defaults.interval+1));
+        // this.interval.interval.value = Math.max(Geneva.defaults.minInterval, Math.abs(Geneva.defaults.interval - (this.generations * Geneva.defaults.accFactor)) % (Geneva.defaults.interval));
+        // console.log(Math.abs(Geneva.defaults.interval - (this.generations * Geneva.defaults.accFactor)) + ": " + Math.abs(Geneva.defaults.interval - (this.generations * Geneva.defaults.accFactor)) % (Geneva.defaults.interval) + ": " + this.interval.interval.value);
+        this.interval.interval.value = Geneva.defaults.intervals[this.generations % Geneva.defaults.intervals.length];
         console.log(this.interval.interval.value);
     },
 
@@ -227,9 +252,10 @@ Geneva.Session.prototype = {
         var chromosomes = this.chromosomes;
         var scale = this.scale;
         var root = this.root;
-        var interval = Math.max(Geneva.defaults.accFactor, Math.abs(Geneva.defaults.interval - (this.generations * Geneva.defaults.accFactor)) % (Geneva.defaults.interval+1));
+        // var interval = Math.max(Geneva.defaults.minInterval, Math.abs(Geneva.defaults.interval - (this.generations * Geneva.defaults.accFactor)) % (Geneva.defaults.interval+1));
+        var interval = Geneva.defaults.intervals[0];
         var characterPosition = this.characterPosition;
-        var projectionRange = 100;
+        var projectionRange = 200;
         // var vel = Geneva.defaults.velocity;
 
         for (var i=0; i<chromosomes.length; i++) {
@@ -265,12 +291,14 @@ Geneva.Session.prototype = {
                     // console.log("character position:" + [c.x, c.y, c.z].join(","));
                 }
 
-                // play
-                chromosome.synth.noteOnWithFreq(freq, vel);
-                // console.log("chromosome " + i + " playing scale degree " + note.scaleDegree + " (" + freq + "Hz)");
-                
-                // animate
-                chromosome.animate(freq, vel); 
+                if (!chromosome.muted) {
+                    // play
+                    chromosome.synth.noteOnWithFreq(freq, vel);
+                    // console.log("chromosome " + i + " playing scale degree " + note.scaleDegree + " (" + freq + "Hz)");
+                    
+                    // animate
+                    chromosome.animate(freq, vel);
+                }
             }
         }).start();
     },

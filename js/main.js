@@ -70,41 +70,6 @@ window.onload = function() {
     var crosshair = new Crosshair();
     console.log(crosshair);
 
-    // var lineGeometry = new THREE.Geometry();
-    // var lineMaterial = new THREE.LineBasicMaterial({
-    //     color: 0xffffff,
-    //     opacity: 0.5
-    // });
-    // var white = new THREE.Color(1,1,1);
-    // var black = new THREE.Color(0,0,0);
-    // var petals = 8;
-    // var radiusInner = 0.01;
-    // var radiusOuter = 0.1;
-    // // for (var i=0; i<petals; i++) {
-    // //     var ratio = i/petals;
-    // //     var angle = ratio * Math.PI * 2;
-
-    // //     geom.vertices.push(new THREE.Vector3(
-    // //         Math.cos(angle) * radiusInner,
-    // //         Math.sin(angle) * radiusInner,
-    // //         0
-    // //     ));
-    // //     geom.vertices.push(new THREE.Vector3(
-    // //         Math.cos(angle) * radiusOuter,
-    // //         Math.sin(angle) * radiusOuter,
-    // //         0
-    // //     ));
-
-    // //     var odd = (i%2) != 0;
-    // //     geom.colors.push(odd ? white : black);
-    // //     geom.colors.push(odd ? white : black);
-    // // }
-    // lineGeometry.vertices.push(new THREE.Vector3(-10, 0, 0));
-    // lineGeometry.vertices.push(new THREE.Vector3(0, 10, 0));
-    // lineGeometry.vertices.push(new THREE.Vector3(10, 0, 0));
-
-    // crosshair = new THREE.Line(lineGeometry, lineMaterial);
-
     var blocker = document.getElementById( 'content' );
     var instructions = document.getElementById( 'gameBtn' );
 
@@ -225,7 +190,6 @@ window.onload = function() {
         scene.add( controls.getObject() );
 
         var onKeyDown = function ( event ) {
-
             switch ( event.keyCode ) {
 
                 case 38: // up
@@ -252,13 +216,14 @@ window.onload = function() {
                     canJump = false;
                     break;
 
+
             }
 
         };
 
         var onKeyUp = function ( event ) {
 
-            // console.log(event.keyCode);
+            console.log(event.keyCode);
 
             switch( event.keyCode ) {
 
@@ -282,6 +247,16 @@ window.onload = function() {
                     moveRight = false;
                     break;
 
+                case 69: // e
+                    session.mode = "selected";
+                    document.getElementById("mode").innerHTML = "Mode: <span class='selectSpan'>Select</span>";
+                    break;
+                case 81: // q
+                    session.mode = "muted";
+                    document.getElementById("mode").innerHTML = "Mode: <span class='muteSpan'>Mute</span>";
+                    break;
+                case 13: // enter
+                    session.evolve(objects);
             }
 
             // chromosome selecting using numpad
@@ -296,15 +271,7 @@ window.onload = function() {
                     i = session.chromosomes.length - 1;
                 }
 
-                var chromosome = session.chromosomes[i];
-                if (chromosome.selected) {
-                    chromosome.selected = false;
-                }
-                else {
-                    chromosome.selected = true;
-                }
-
-                chromosome.updateAnimator();
+                session.handleClick(i);
             }
 
         };
@@ -549,13 +516,7 @@ window.onload = function() {
             console.log(mouse_intersects);
             if (mouse_intersects.length > 0) {
                 var mi = mouse_intersects[0].object.index;
-                if (session.chromosomes[mi].selected) {
-                    session.chromosomes[mi].selected = false;
-                }
-                else {
-                    session.chromosomes[mi].selected = true;
-                }
-                session.chromosomes[mi].updateAnimator();
+                session.handleClick(mi);
             }
 
             // mouseChromosome = true;

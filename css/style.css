@@ -6,7 +6,7 @@ body {
 }
 
 #content {
-    display: inline-block;
+    display: -webkit-box;
 }
 
 .ctrlBtn {
@@ -35,3 +35,15 @@ body {
 #crossover {
     display:none;
 }*/
+
+#misc {
+    display: none;
+}
+
+.selectSpan {
+    color: green;
+}
+
+.muteSpan {
+    color: red;
+}

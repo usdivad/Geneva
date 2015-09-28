@@ -46,7 +46,9 @@ Geneva.defaults = {
     // Performance
     interval: 250,
     velocity: 64,
-    accFactor: 50
+    accFactor: 25,
+    minInterval: 100,
+    intervals: [250, 225, 200, 175, 150, 125, 100, 125, 150, 175, 200, 225]
 };
 Geneva.REST = -1;
 // Geneva.HOLD = -2;
