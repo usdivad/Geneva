@@ -63,10 +63,10 @@ window.onload = function() {
     var raycaster;
 
     // mouse stuff
-    var mouse_ray = new THREE.Raycaster(new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,0));
-    var mouse_vector = new THREE.Vector3();
-    var mouse = {x:0, y:0, z:1};
-    var mouse_intersects = [];
+    // var mouse_ray = new THREE.Raycaster(new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,0));
+    // var mouse_vector = new THREE.Vector3();
+    // var mouse = {x:0, y:0, z:1};
+    // var mouse_intersects = [];
 
     var blocker = document.getElementById( 'content' );
     var instructions = document.getElementById( 'gameBtn' );
@@ -446,13 +446,17 @@ window.onload = function() {
     }
 
     function onMouseDown(e) {
-        e.preventDefault();
-        mouse.x = (e.clientX / renderer.domElement.width) * 2 - 1;
-        mouse.y = (e.clientY / renderer.domElement.height) * 2 - 1;
+        // e.preventDefault();
+        // mouse.x = (e.clientX / renderer.domElement.width) * 2 - 1;
+        // mouse.y = (e.clientY / renderer.domElement.height) * 2 - 1;
 
-        mouse_ray.setFromCamera(mouse, camera);
-        mouse_intersects = mouse_ray.intersectObjects(objects);
-        // console.log(mouse_intersects);
+        // mouse_ray.setFromCamera(mouse, camera);
+        // mouse_ray.ray.origin.copy( controls.getObject().position );
+        
+        var mouse_ray = new THREE.Raycaster(controls.getObject().position, controls.getDirection(controls.getObject().position));
+
+        var mouse_intersects = mouse_ray.intersectObjects(objects);
+        console.log(mouse_intersects);
         if (mouse_intersects.length > 0) {
             var mi = mouse_intersects[0].object.index;
             if (session.chromosomes[mi].selected) {
