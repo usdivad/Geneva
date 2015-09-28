@@ -67,6 +67,43 @@ window.onload = function() {
     // var mouse_vector = new THREE.Vector3();
     // var mouse = {x:0, y:0, z:1};
     // var mouse_intersects = [];
+    var crosshair = new Crosshair();
+    console.log(crosshair);
+
+    // var lineGeometry = new THREE.Geometry();
+    // var lineMaterial = new THREE.LineBasicMaterial({
+    //     color: 0xffffff,
+    //     opacity: 0.5
+    // });
+    // var white = new THREE.Color(1,1,1);
+    // var black = new THREE.Color(0,0,0);
+    // var petals = 8;
+    // var radiusInner = 0.01;
+    // var radiusOuter = 0.1;
+    // // for (var i=0; i<petals; i++) {
+    // //     var ratio = i/petals;
+    // //     var angle = ratio * Math.PI * 2;
+
+    // //     geom.vertices.push(new THREE.Vector3(
+    // //         Math.cos(angle) * radiusInner,
+    // //         Math.sin(angle) * radiusInner,
+    // //         0
+    // //     ));
+    // //     geom.vertices.push(new THREE.Vector3(
+    // //         Math.cos(angle) * radiusOuter,
+    // //         Math.sin(angle) * radiusOuter,
+    // //         0
+    // //     ));
+
+    // //     var odd = (i%2) != 0;
+    // //     geom.colors.push(odd ? white : black);
+    // //     geom.colors.push(odd ? white : black);
+    // // }
+    // lineGeometry.vertices.push(new THREE.Vector3(-10, 0, 0));
+    // lineGeometry.vertices.push(new THREE.Vector3(0, 10, 0));
+    // lineGeometry.vertices.push(new THREE.Vector3(10, 0, 0));
+
+    // crosshair = new THREE.Line(lineGeometry, lineMaterial);
 
     var blocker = document.getElementById( 'content' );
     var instructions = document.getElementById( 'gameBtn' );
@@ -366,6 +403,10 @@ window.onload = function() {
 
         }
 
+        crosshair.position.y = 10;
+        crosshair.position.z = -5;
+        scene.add(crosshair);
+        console.log(crosshair.position);
         //
 
         renderer = new THREE.WebGLRenderer();
@@ -396,6 +437,23 @@ window.onload = function() {
         if ( controlsEnabled ) {
             raycaster.ray.origin.copy( controls.getObject().position );
             // raycaster.ray.origin.y -= 10;
+            
+            var pos = controls.getObject().position;
+            var dir = new THREE.Vector3();
+            controls.getDirection(dir);
+            var crosshairDistance = 5;
+            // var crosshair_ray = new THREE.Raycaster(pos, dir);
+            // var origin = crosshair_ray.ray.origin;
+
+            crosshair.position.x = pos.x + dir.x * crosshairDistance;
+            crosshair.position.y = pos.y + dir.y * crosshairDistance;
+            crosshair.position.z = pos.z + dir.z * crosshairDistance;
+            
+            // crosshair.position.x = dir.x;
+            // crosshair.position.y = dir.y;
+            // crosshair.position.z = dir.z;
+
+            // console.log(crosshair.position);
 
             var intersections = raycaster.intersectObjects( objects );
 
@@ -506,6 +564,8 @@ window.onload = function() {
         return handler;
 
     }
+
+
     document.addEventListener("mousedown", function(e) {
         var eh = onMouseDown();
         eh();
