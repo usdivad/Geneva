@@ -70,8 +70,9 @@ window.onload = function() {
     var crosshair = new Crosshair();
     console.log(crosshair);
 
-    var blocker = document.getElementById( 'content' );
-    var instructions = document.getElementById( 'gameBtn' );
+    var blocker = document.getElementById( 'blocker' );
+    var instructions = document.getElementById( 'instructions' );
+    var instructionsOn = true;
 
     // http://www.html5rocks.com/en/tutorials/pointerlock/intro/
 
@@ -90,6 +91,8 @@ window.onload = function() {
 
                 blocker.style.display = 'none';
 
+                session.play();
+
             } else {
 
                 controls.enabled = false;
@@ -99,6 +102,8 @@ window.onload = function() {
                 blocker.style.display = 'box';
 
                 instructions.style.display = '';
+
+                session.stop();
 
             }
 
@@ -120,7 +125,6 @@ window.onload = function() {
         document.addEventListener( 'webkitpointerlockerror', pointerlockerror, false );
 
         instructions.addEventListener( 'click', function ( event ) {
-
             instructions.style.display = 'none';
 
             // Ask the browser to lock the pointer
@@ -257,6 +261,40 @@ window.onload = function() {
                     break;
                 case 13: // enter
                     session.evolve(objects);
+
+                // case 27: // ESC
+                //     instructions.style.display = 'none';
+
+                //     // Ask the browser to lock the pointer
+                //     element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+
+                //     if ( /Firefox/i.test( navigator.userAgent ) ) {
+
+                //         var fullscreenchange = function ( event ) {
+
+                //             if ( document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element ) {
+
+                //                 document.removeEventListener( 'fullscreenchange', fullscreenchange );
+                //                 document.removeEventListener( 'mozfullscreenchange', fullscreenchange );
+
+                //                 element.requestPointerLock();
+                //             }
+
+                //         }
+
+                //         document.addEventListener( 'fullscreenchange', fullscreenchange, false );
+                //         document.addEventListener( 'mozfullscreenchange', fullscreenchange, false );
+
+                //         element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
+
+                //         element.requestFullscreen();
+
+                //     } else {
+
+                //         element.requestPointerLock();
+
+                //     }
+                //     break;
             }
 
             // chromosome selecting using numpad
@@ -355,7 +393,7 @@ window.onload = function() {
                 mesh.position.x = 50 * Math.abs(halfway-i);
             }
             mesh.position.y = 10;
-            mesh.position.z = -50;
+            mesh.position.z = -100;
             mesh.name = "chromosomeMesh" + i;
             mesh.index = i;
             scene.add( mesh );
@@ -528,9 +566,11 @@ window.onload = function() {
 
 
     document.addEventListener("mousedown", function(e) {
-        var eh = onMouseDown();
-        eh();
-        // mouseChromosome = true;
+        if (controlsEnabled) {
+            var eh = onMouseDown();
+            eh();
+            // mouseChromosome = true;
+        }
     });
 
     document.addEventListener("mouseup", function() {

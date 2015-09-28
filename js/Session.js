@@ -103,6 +103,16 @@ Geneva.Session.prototype = {
             this.chromosomes[i][this.mode] = true;
         }
 
+        if (this.chromosomes[i].selected) {
+            document.getElementById("chromosome" + i).style.color = "green";
+        }
+        else if (this.chromosomes[i].muted) {
+            document.getElementById("chromosome" + i).style.color = "red";
+        }
+        else {
+            document.getElementById("chromosome" + i).style.color = "black";
+        }
+
         this.chromosomes[i].updateAnimator();
     },
 
@@ -306,6 +316,10 @@ Geneva.Session.prototype = {
     stop: function() {
         this.interval.stop();
     },
+
+    // pause: function() {
+    //     this.interval.play(0);
+    // },
 
     updateDisplays: function() {
         for (var i=0; i<this.chromosomes.length; i++) {

@@ -27,12 +27,34 @@
         <script src="js/main.js"></script>
     </head>
     <body>
-        <h1>Geneva</h1>
+        <h1>Geneva <span id="info">by David Su<!--  (<a href="#content">info</a>) --></span></h1>
         <div id="hud">
-            <div id="mode">Mode: <span class="selectSpan">Select</span></div>
             <div id="genCount">0 generations</div>
+            <div id="mode">Mode: <span class="selectSpan">Select</span></div>
+        </div>
+        <div id="blocker">
+            <div id="instructions">
+                <span style="font-size:40px">Click to play</span>
+                <br /><br>
+                W, A, S, D = Move
+                <br><br>
+                MOUSE MOVE = Look around
+                <br>
+                MOUSE CLICK = Choose chromosome
+                <br><br>
+                E = Selection Mode (choose for next generation)
+                <br>
+                Q = Quieten Mode (mute chosen chromosome)
+                <br>
+                0 - 9 = Choose chromosome by index
+                <br><br>
+                ENTER = Evolve
+                <br><br><br>
+                Scroll down for non-3D, button-based controls
+            </div>
         </div>
         <div id="content">
+            <a name="content"></a>
             <div id="playback">
                 <h2>Playback</h2>
                 <div class="ctrlBtn" id="playBtn">Play</div>
@@ -49,7 +71,6 @@
                 <h2>Evolve</h2>
                 <div class="ctrlBtn" id="evolveBtn">Evolve</div>
                 <br><br>
-                <div id="genCount">0 generations</div>
             <div id="mutate">
                 <h2>Mutate All</h2>
                 <div class="ctrlBtn" id="reverseBtn">Reverse</div>
