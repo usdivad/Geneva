@@ -270,7 +270,7 @@ Geneva.Chromosome.prototype = {
            var dynamicTexture = new THREEx.DynamicTexture(1024, 1024);
             dynamicTexture.font = "Helvetica";
             if (this.selected) {
-                dynamicTexture.clear("green");
+                dynamicTexture.clear("red");
             }
             else {
                 dynamicTexture.clear("white");
