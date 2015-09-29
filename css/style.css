@@ -2,6 +2,10 @@ body {
     font-family: Helvetica;
 }
 
+a {
+    color: white;
+}
+
 #mutate {
 }
 

@@ -93,6 +93,8 @@ window.onload = function() {
 
                 session.play();
                 document.getElementById("gameheader").style.color = "black";
+                document.getElementById("usdivad").style.color = "black";
+
 
             } else {
 
@@ -106,6 +108,7 @@ window.onload = function() {
 
                 session.stop();
                 document.getElementById("gameheader").style.color = "white";
+                document.getElementById("usdivad").style.color = "white";
 
             }
 

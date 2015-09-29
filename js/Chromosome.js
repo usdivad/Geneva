@@ -8,7 +8,8 @@ Geneva.Chromosome = function(notes, scale) {
     // this.synth = T("OscGen", {env: T("perc", {a: 10, r: 50}), mul: 1/Geneva.defaults.numChromosomes}).play();
     // this.synth = T("OscGen", {env: this.env, mul: this.mul}).play();
     this.synth = [
-        T("OscGen", {osc: this.osc, env: this.env, mul: this.mul}).play(),
+        T("OscGen", {osc: this.osc, env: this.env, mul: this.mul*0.5}).play(),
+        T("OscGen", {env: this.env, mul: this.mul}).play(),
         T("PluckGen", {env: this.env, mul: this.mul}).play()
     ].choose();
     this.fitness = 0;
@@ -138,6 +139,7 @@ Geneva.Chromosome.prototype = {
     // Reverse the order of notes
     reverse: function() {
         this.notes.reverse();
+        this.tweet = this.tweet.split(" ").reverse().join(" ");
     },
 
     // Rotate by up to max steps
@@ -147,6 +149,7 @@ Geneva.Chromosome.prototype = {
         }
         var r = Math.floor(max.rand2()); // from -max to max
         this.notes = this.notes.rotate(r);
+        this.tweet = this.tweet.split(" ").rotate(r).join(" ");
     },
 
     // Invert pitches, based on scale, around the first note in the sequence
@@ -184,16 +187,19 @@ Geneva.Chromosome.prototype = {
             // console.log(str);
             
             this.notes[i] = note;
+            this.tweet = this.tweet.split(" ").reverse().join(" ");
         }
     },
 
     // TODO: account for rests in sorting
     sortAsc: function() {
         this.notes.sort();
+        this.tweet = this.tweet.split(" ").sort().join(" ");
     },
 
     sortDesc: function() {
         this.notes.sort().reverse();
+        this.tweet = this.tweet.split(" ").sort().reverse().join(" ");
     },
 
     // Transpose along scale (num steps determined by max)
@@ -245,6 +251,12 @@ Geneva.Chromosome.prototype = {
             // }
 
             this.notes[i] = note;
+            if (distance < 0) {
+                this.tweet = this.tweet.toLowerCase();
+            }
+            else {
+                this.tweet = this.tweet.toUpperCase();
+            }
         }
     },
 

@@ -53,7 +53,7 @@ Geneva.defaults = {
 Geneva.REST = -1;
 // Geneva.HOLD = -2;
 
-Geneva.waves = ["sin", "saw", "tri", "pulse", "fami"];
+Geneva.waves = ["saw", "tri", "pulse", "fami"]; //, "sin"];
 
 
 Geneva.mutationMethods = ["reverse", "rotate", "invert", "sortAsc", "sortDesc", "transpose"];
