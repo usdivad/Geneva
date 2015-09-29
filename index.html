@@ -27,10 +27,13 @@
         <script src="js/main.js"></script>
     </head>
     <body>
-        <h1>Geneva <span id="info">by David Su<!--  (<a href="#content">info</a>) --></span></h1>
-        <div id="hud">
-            <div id="genCount">0 generations</div>
-            <div id="mode">Mode: <span class="selectSpan">Select</span></div>
+        <div id="game">
+        <div id="gameheader">
+            <h1>Geneva <span id="info">by David Su<!--  (<a href="#content">info</a>) --></span></h1>
+            <div id="hud">
+                <div id="genCount">0 generations</div>
+                <div id="mode">Mode: <span class="selectSpan">Select</span></div>
+            </div>
         </div>
         <div id="blocker">
             <div id="instructions">
@@ -53,10 +56,11 @@
                 Scroll down for non-3D, button-based controls
             </div>
         </div>
+    </div>
         <div id="content">
             <a name="content"></a>
-            <div id="playback">
-                <h2>Playback</h2>
+            <div id="playback" class="contentDiv">
+                <h2>Audio</h2>
                 <div class="ctrlBtn" id="playBtn">Play</div>
                 <div class="ctrlBtn" id="stopBtn">Stop</div>
             <div id="game">
@@ -64,14 +68,14 @@
                 <div class="ctrlBtn" id="gameBtn">Play Game</div>
             </div>
             </div>
-            <div id="chromosomes">
+            <div id="chromosomes" class="contentDiv">
                 <h2>Chromosomes</h2>
             </div>
             <div id="evolve">
                 <h2>Evolve</h2>
                 <div class="ctrlBtn" id="evolveBtn">Evolve</div>
                 <br><br>
-            <div id="mutate">
+            <div id="mutate" class="contentDiv">
                 <h2>Mutate All</h2>
                 <div class="ctrlBtn" id="reverseBtn">Reverse</div>
                 <div class="ctrlBtn" id="rotateBtn">Rotate</div>
@@ -80,12 +84,12 @@
                 <div class="ctrlBtn" id="sortDescBtn">Sort Desc</div>
                 <div class="ctrlBtn" id="transposeBtn">Transpose</div>
             </div>
-            <div id="crossover">
-                <h2>Crossover</h2>
+            <div id="crossover" class="contentDiv">
+                <h2>Crossover Selected</h2>
                 <div class="ctrlBtn" id="crossoverBtn">Crossover</div>
             </div>
             </div>
-            <div id="misc">
+            <div id="misc" class="contentDiv">
                 <h2>Misc</h2>
                 <div id="twitterDisplay"></div>
                 <div class="ctrlBtn" id="selectedBtn">View Sel</div>

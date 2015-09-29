@@ -92,6 +92,7 @@ window.onload = function() {
                 blocker.style.display = 'none';
 
                 session.play();
+                document.getElementById("gameheader").style.color = "black";
 
             } else {
 
@@ -104,6 +105,7 @@ window.onload = function() {
                 instructions.style.display = '';
 
                 session.stop();
+                document.getElementById("gameheader").style.color = "white";
 
             }
 
@@ -342,7 +344,7 @@ window.onload = function() {
 
         }
 
-        material = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors } );
+        material = new THREE.MeshBasicMaterial( { vertexColors: "white" } );
 
         mesh = new THREE.Mesh( geometry, material );
         scene.add( mesh );
