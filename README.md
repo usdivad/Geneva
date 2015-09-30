@@ -1,0 +1,5 @@
+#Geneva
+
+![Screenshot](screenshot1.png?raw=true "Screenshot")
+
+Geneva is an interactive exploration of genetic algorithms as applied to sonification of tweets, which are scraped in real time and converted to music using sentiment analysis. The work is in many ways a musical adaptation of and homage to Karl Sims' Genetic Images (1993); to facilitate the listener/user's simultaneous evaluation of multiple melodies, each chromosome is placed in a 3D space, allowing for different combinations to be heard depending on the player's location. In addition, the first-person controls allow for easy control and manipulation of both sonic (mute, solo) and genetic (select, reject, evolve) aspects of the population. Mutation and crossover algorithms, which affect pitch, rhythm, and timbre as well as the tweet content itself, are heavily influenced by John Biles' GenJam. Geneva makes use of the Web Audio API (timbre.js, subcollider.js), WebGL (THREE.js), and Jason Mayes' Twitter post fetcher; it is available to play at http://usdivad.com/geneva.
