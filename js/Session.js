@@ -192,14 +192,14 @@ Geneva.Session.prototype = {
             ctemp.mutate(this.scale);
             n0 = ctemp.notes;
             // t0 = Geneva.mutateText(t0);
-            t0 = ctemp.tweet;
+            // t0 = ctemp.tweet;
         }
         if (mutate_n1) {
             var ctemp = new Geneva.Chromosome(n1);
             ctemp.mutate(this.scale);
             n1 = ctemp.notes;
             // t0 = Geneva.mutateText(t1);
-            t1 = ctemp.tweet;
+            // t1 = ctemp.tweet;
         }
 
         // combine the two note arrs
@@ -207,7 +207,7 @@ Geneva.Session.prototype = {
         var t2 = t0.concat(" ").concat(t1);
         var c2 = new Geneva.Chromosome(n2);
         c2.tweet = t2;
-        console.log(t2);
+        // console.log(t2);
         return c2;
     },
 
@@ -261,7 +261,7 @@ Geneva.Session.prototype = {
     },
 
     play: function() {
-        console.log(this);
+        // console.log(this);
         var chromosomes = this.chromosomes;
         var scale = this.scale;
         var root = this.root;

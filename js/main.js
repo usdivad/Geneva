@@ -232,7 +232,7 @@ window.onload = function() {
 
         var onKeyUp = function ( event ) {
 
-            console.log(event.keyCode);
+            // console.log(event.keyCode);
 
             switch( event.keyCode ) {
 
