@@ -23,33 +23,70 @@ window.onload = function() {
     // console.log("crossover'd: " + cc.toHTML());
 
 
-    // Populate with tweets
-    var twitterConfig = {
-        "id": "647395831872679937",
-        "domId": "twitterDisplay",
-        "maxTweets": Geneva.defaults.numChromosomes,
-        "enableLinks": false,
-        "showUser": true,
-        "showImages": false,
-        "showRetweet": false,
-        "customCallback": handleTweets
-    };
+    // Tweets with twitterFetcher
 
-    function handleTweets(tweets) {
+    // // Populate with tweets
+    // var twitterConfig = {
+    //     "id": "647395831872679937",
+    //     "domId": "twitterDisplay",
+    //     "maxTweets": Geneva.defaults.numChromosomes,
+    //     "enableLinks": false,
+    //     "showUser": true,
+    //     "showImages": false,
+    //     "showRetweet": false,
+    //     "customCallback": handleTweets
+    // };
+
+    // function handleTweets(tweets) {
+    //     console.log(tweets);
+    //     console.log(tweets.length);
+    //     for (var i=0; i<tweets.length; i++) {
+    //         var tweet = tweets[i];
+    //         var elm = document.createElement("html");
+    //         elm.innerHTML = tweet;
+    //         var tweetContent = elm.getElementsByClassName("tweet")[0].innerText;
+    //         var tweetUser = elm.getElementsByClassName("user")[0].innerText.replace(/\s+/g, " ");
+    //         console.log(tweetContent + " by " + tweetUser);
+    //         session.chromosomes[i].tweet = tweetContent;
+    //         session.chromosomes[i].updateAnimator();
+    //     }
+    // }
+
+    // console.log(twitterFetcher);
+    // twitterFetcher.fetch(twitterConfig);
+
+
+    // Tweets with Twitter API 1.1, using PHP script
+    var twitterQuery = "#webaudio";
+    twitterQuery = encodeURIComponent(twitterQuery);
+
+    var handleTweets = function(resp) {
+        tweets = resp.split("<br/>");
+        // console.log(tweets);
+        console.log(tweets.length);
         for (var i=0; i<tweets.length; i++) {
             var tweet = tweets[i];
             var elm = document.createElement("html");
             elm.innerHTML = tweet;
-            var tweetContent = elm.getElementsByClassName("tweet")[0].innerText;
-            var tweetUser = elm.getElementsByClassName("user")[0].innerText.replace(/\s+/g, " ");
-            console.log(tweetContent + " by " + tweetUser);
-            session.chromosomes[i].tweet = tweetContent;
-            session.chromosomes[i].updateAnimator();
+            // var tweetContent = elm.getElementsByClassName("tweet")[0].innerText;
+            // var tweetUser = elm.getElementsByClassName("user")[0].innerText.replace(/\s+/g, " ");
+            // console.log(tweetContent + " by " + tweetUser);
+            console.log(tweet);
+            if (i < session.chromosomes.length) {
+                session.chromosomes[i].tweet = tweet;
+                session.chromosomes[i].updateAnimator();
+            }
         }
-    }
+    };
 
-    console.log(twitterFetcher);
-    twitterFetcher.fetch(twitterConfig);
+    $.ajax({
+        url: "php/search_response.php",
+        data: {
+            q: twitterQuery,
+            // count: Geneva.defaults.numChromosomes
+        },
+
+    }).done(handleTweets);
 
     
 
@@ -221,8 +258,9 @@ window.onload = function() {
                     break;
 
                 case 32: // space
-                    if ( canJump === true ) velocity.y += 500;
+                    // if ( canJump === true ) velocity.y += 500;
                     canJump = false;
+                    event.preventDefault();
                     break;
 
 
