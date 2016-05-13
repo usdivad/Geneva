@@ -62,7 +62,7 @@ window.onload = function() {
 
     var handleTweets = function(resp) {
         tweets = resp.split("<br/>");
-        // console.log(tweets);
+        console.log(tweets.join("\n"));
         console.log(tweets.length);
         for (var i=0; i<tweets.length; i++) {
             var tweet = tweets[i];
@@ -407,13 +407,16 @@ window.onload = function() {
         }
 
         // this is where the boxes get created
+        var defaultTweets = ["Divestment in companies involved in the world's illegal occupations being discussed in Finance Subcommittee. #umcgc #GenevaConventions 49(6)", "FYI #AskNetanyahu if you are so above the #GenevaConventions your whole \"Nation\" should cease to exist you mother fucker. @rk70534", "Is Torture a War Crime or a policy in the eyes of American Justice? #AbuGhraib #Irak #Torture #GenevaConventions   https://t.co/YGBT2UVOLu", "This Law of the Innocents of Adomnán of Iona, AD 697, was in many ways a precursor of the #GenevaConventions on war. https://t.co/nNK5iW4bpf", "#Trump’s Constitution of One: doesn't support #FreedomofSPeeceh, absues #EminentDomain, ignores #GenevaCOnventions  https://t.co/Qrzzrrc8V4", "Is it that hard to conceive a detention system respectful of human rights and dignity? #GenevaConventions https://t.co/JKiolLEIHV", "Fantastic piece by @HADurhamICRC on why the #GenevaConventions are so important https://t.co/cmHVAzkTY3 #IHL #LOAC #warlaw #war #politcs", ".@mitrakalita half a million Iraqi children dead, is a \"price worth it\" says @madeleine, https://t.co/xxZlnD0Wmh. #genevaconventions.", "Did you need a reminder that the #GenevaConventions were essentially common sense? It's #Ethics for all not #Morals", "https://t.co/lnWs2ZWpbq", "@Metal_Fusionist @Farid_Senzai Trump said he will take out their families. You condone that? #GenevaConventions", "I guess, since the #pentagon decided that #bombing #hospitals wasn't a #warcrime, #GenevaConventions R so last year! https://t.co/Ai7ks1G5UX", "Retweeted UKUN_NewYork (@UKUN_NewYork:\n67 years after the #GenevaConventions, bombing hospitals in #Syria has... https://t.co/UlSd7LYWBW", "RT UKUN_NewYork: 67 years after the #GenevaConventions, bombing hospitals in #Syria has become routine. This must... https://t.co/OTkbGEswK3", "RT UKUN_NewYork: 67 years after the #GenevaConventions, bombing hospitals in #Syria has become routine. This must … https://t.co/vN20BTrCjh", "When politicians ignore humanitarian law, innocent lives suffer https://t.co/VhD1EBbMjy #GenevaConventions @OxHRH"];
+
         for ( var i = 0; i < session.chromosomes.length; i ++ ) {
 
             var dynamicTexture = new THREEx.DynamicTexture(1024, 1024);
             dynamicTexture.font = "Helvetica";
             dynamicTexture.clear("white");
             dynamicTexture.drawTextCooked({
-                text: "The greatest thing you'll ever learn is just to #love and be loved in return " + i,
+                // text: "The greatest thing you'll ever learn is just to #love and be loved in return " + i,
+                text: defaultTweets[i]
             });
 
             material = new THREE.MeshPhongMaterial( { map: dynamicTexture.texture, specular: 0xffffff, shading: THREE.FlatShading, vertexColors: THREE.VertexColors } );
