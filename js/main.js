@@ -57,7 +57,7 @@ window.onload = function() {
 
 
     // Tweets with Twitter API 1.1, using PHP script
-    var twitterQuery = "#webaudio";
+    var twitterQuery = "#genevaconventions";
     twitterQuery = encodeURIComponent(twitterQuery);
 
     var handleTweets = function(resp) {
